@@ -1,0 +1,108 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">购买记录</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="delPro"><i class="layui-icon">&#xe654;</i>删除选中</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfPro_Table" lay-filter="CfPro_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+
+        table = layui.table
+        table.render({
+            elem: '#CfPro_Table',
+            url: '/Admin/AjaxPro',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', title: 'id', align: 'center'},
+                {field: 'name', title: '商品名称', align: 'center', sort: true},
+                {field: 'usn', title: '购买USN', align: 'center', sort: true},
+                {field: 'money', title: '购买金额', align: 'center', sort: true},
+                {field: 'type', title: '购买类型', align: 'center', sort: true},
+                {field: 'create_time', title: '注册时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+
+        function delPro(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delPro?id=' + ids.join("."),
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfPro_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        function delAll(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delProAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfPro_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+
+
+        table.on('toolbar(CfPro_Table)', function (obj) {
+            if (obj.event === 'delPro') {
+                layer.confirm('确定要删除选中的记录吗？', function () {
+                    var checkStatus = table.checkStatus('CfPro_Table')
+                        , data = checkStatus.data;
+                    const ids = []
+                    for (const dataKey in data) {
+                        ids.push(data[dataKey].id)
+                    }
+                    delPro(ids)
+                })
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部购买记录吗删除后不可恢复？', function () {
+                    delAll()
+                })
+            }
+        });
+
+    });
+</script>

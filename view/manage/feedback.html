@@ -1,0 +1,202 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">举报投诉</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfFeedBack_Table" lay-filter="CfFeedBack_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfFeedBack_Controls">
+    {{# if (d.status == '0') { }}
+    {{# if (d.type == '1') { }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs data-count-ban" lay-event="Banned">封号</a>
+    {{# } else if (d.type == '2') { }}
+    <a class="layui-btn layui-btn-warm layui-btn-xs data-count-ban" lay-event="LiftBan">解封</a>
+    {{# } }}
+    <a class="layui-btn layui-btn-warm layui-btn-xs data-count-ban" lay-event="Turn">驳回</a>
+    {{# } }}
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-content" lay-event="content">理由</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="del">删除</a>
+</script>
+<!-- js部分 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+
+        table = layui.table
+        table.render({
+            elem: '#CfFeedBack_Table',
+            url: '/Admin/AjaxFeedBack',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'status', title: '状态', width:150, align:"center",templet:function(d){
+                        if (d.status == '0'){
+                            return '<font color="red">未处理</font>';
+                        }else if (d.status == '1'){
+                            return '<font color="green">已处理</font>';
+                        }else if (d.status == '3'){
+                            return '<font color="#d2691e">已驳回</font>';
+                        }
+                    }},
+                {field: 'usn', title: 'usn', align: 'center', sort: true},
+                {field: 'nick', title: '昵称', align: 'center', sort: true},
+                {field: 'email', title: '邮箱', align: 'center', sort: true},
+                {field: 'ban', title: '举报', align: 'center', sort: true},
+                {field: 'shen', title: '申诉', align: 'center', sort: true},
+                {field: 'create_time', title: '创建时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfFeedBack_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+
+        table.on('tool(CfFeedBack_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'Banned') {
+                layer.confirm('确定封禁该角色？', function (index) {
+                    Banned(data.id,data.email,data.nick)
+                    layer.close(index);
+                });
+            } else if (obj.event === 'LiftBan') {
+                layer.confirm('确定解封该角色吗？', function (index) {
+                    LiftBan(data.id,data.email)
+                    layer.close(index);
+                });
+            } else if (obj.event === 'content') {
+                getContent(data.id);
+            } else if (obj.event === 'del') {
+                layer.confirm('确定删除该记录？', function (index) {
+                    del([data.id])
+                    layer.close(index);
+                });
+            } else if (obj.event === 'Turn') {
+                layer.prompt({title: '驳回该条记录的理由', formType: 2}, function(text, index){
+                    Turn(data.id,data.email,text); // 将输入的文本传递给Turn函数
+                    layer.close(index);
+                });
+            }
+        });
+
+        function getContent(id) {
+            $.ajax({
+                url: '/Admin/AjaxContent',
+                type: 'GET',
+                data: { id: id },
+                dataType:'json',
+                success: function (data) {
+                    if (data.code === 200) {
+                        var converter = new showdown.Converter();
+                        var html = converter.makeHtml(data.content);
+                        layer.open({
+                            title: '理由',
+                            content: html
+                        });
+                    } else {
+                        layer.open({
+                            title: '理由',
+                            content: data.content
+                        });
+                    }
+                }
+            });
+        }
+
+        function Turn(ids,email,text) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            $.post('/Admin/FeedBackTurn', {
+                id: ids,
+                email:email,
+                text:text
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfFeedBack_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            }, 'json');
+        }
+
+        function del(ids) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            $.post('/Admin/FeedBackDel', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfFeedBack_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            }, 'json');
+        }
+
+        function Banned(ids,email,nick) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            $.post('/Admin/FeedBackBanned', {
+                id: ids,
+                email: email,
+                nick: nick,
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfFeedBack_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            }, 'json');
+        }
+
+        function LiftBan(ids,email) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            $.post('/Admin/FeedBackLiftBan', {
+                id: ids,
+                email:email,
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfFeedBack_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            }, 'json');
+        }
+
+
+    });
+</script>

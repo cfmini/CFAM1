@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>举报申诉 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    {if session('USER_LOGIN_ID')}
+    <div class="card mb-3">
+        <div class="card-header p-3">
+            <span class="class_hr"></span>
+            <h5 class="ml-3">举报申诉</h5>
+        </div>
+        <form method="POST">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="media align-items-center">
+                        <label class="mb-0 wid-100">选择类型：</label>
+                        <div class="media-body">
+                            <p class="mb-0">
+                                <label class="form-check-label ml-4"><input class="form-check-input" type="radio" name="type" value="1" checked="">举报</label>
+                                <label class="form-check-label ml-5"><input class="form-check-input" type="radio" name="type" value="2">申诉</label>
+                            </p>
+                        </div>
+                    </div>
+                </li><li class="list-group-item">
+                <div class="media align-items-center">
+                    <label class="mb-0 wid-100"><font color="#dc143c">游戏名：</font></label>
+                    <div class="media-body">
+                        <p class="mb-0"><input id="nick" name="nick" type="text" maxlength="15" class="form-control form-control-sm" value="" placeholder="例：Sbmao5" autocomplete="off"></p>
+                    </div>
+                </div>
+            </li>
+                <li class="list-group-item">
+                    <div class="media align-items-center">
+                        <label class="mb-0 wid-100">邮箱：</label>
+                        <div class="media-body">
+                            <p class="mb-0"><input type="text" maxlength="15" class="form-control form-control-sm" value="{$email}" disabled></p>
+                        </div>
+                    </div>
+                </li>
+                <div id="description">
+                    <textarea></textarea>
+                </div>
+                <li class="list-group-item">
+                    <div class="media align-items-center">
+                        <div class="media-body">
+                            <p class="mb-2"><font color="#dc143c ">注意：图片或者视频请自己上传到网盘或者使用简易网盘<a href="https://pan.suime.cn/" target="_blank">https://pan.suime.cn/</a></font></p>
+                            <p class="mb-2">1、举报必须带详细的截图或者视频（没有图片或者视频的一律驳回）；</p>
+                            <p class="mb-2">2、如果是申诉必须附上理由，情节不严重的可以解封；</p>
+                            <p class="mb-1">3、一般审核得看后台管理员是否在线；</p>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="media align-items-center">
+                        <label class="mb-0 wid-100">验证码：</label>
+                        <div class="media-body">
+                            <p class="mb-0">
+                                <input id="code" name="code" type="text" class="form-control form-control-sm col-6" value="" placeholder="请输入右侧图片的验证码" autocomplete="off" maxlength="5" style="display: inline-block;">
+                                <img oncontextmenu="return false;" ondragstart="return false;" style="cursor:pointer;margin-top: -5px;z-index: 1;display: inline-block;margin-left: 5px;" src="{:captcha_src()}" height="30px" width="90px" title="点击刷新" id="code_img" onclick="this.src='{:captcha_src()}?rand=' + Math.random();"></p>
+                        </div>
+                    </div>
+                </li>
+
+
+                <li class="list-group-item py-3 text-center" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                    <button class="btn btn-primary event-btn checkform" type="button">
+                        <span class="spinner-border spinner-border-sm" role="status" style="display:none"></span>
+                        <span class="btn-text">立即提交</span>
+                    </button>
+                </li>
+            </ul>
+        </form>
+    </div>
+    {else}
+    <div class="alert alert-danger" role="alert">
+        请先登录账号后才可进行举报申诉！！！
+    </div>
+    {/if}
+    {volist name='ok' id='v'}
+    <div class="card mb-3" style="border-left: 3px solid #4680ff">
+        <div class="card-body" style="font-size: 13px">
+            <div style="">
+                <div class="feedback-text">
+                    <span class="mr-2">用户提交：</span>{$v.email}<i class="feather icon-chevrons-right text-primary ml-2 mr-2"></i>{if $v.type == 1}举报角色：{$v.nick}{elseif $v.type == 2}申诉角色：{$v.nick}{else}捣乱的{/if}<br>
+                    <span class="mr-2">审核更新：</span>{if $v.update_time == null}--{else}<font color="#dc143c">{$v.update_time}</font>{/if}  累计：{$countList[$v.usn]}
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-muted" title="{$v.create_time}"><i class="feather icon-clock"></i> {$v.create_time}</span>
+                {if $v.status == 0}
+                <span class="badge badge-warning float-right">待审核</span>
+                {elseif $v.status ==1}
+                <span class="badge badge-success float-right">已审核</span>
+                {else}
+                <span class="badge badge-danger float-right">已驳回</span>
+                {/if}
+            </div>
+        </div>
+    </div>
+    {/volist}
+</div>
+{include file="/default/common/footer" /}
+<link href="/static/editor.md/css/editormd.css" rel="stylesheet"/>
+<script src="/static/editor.md/editormd.js"></script>
+<script>
+    {if session('USER_LOGIN_ID')}
+    // 编辑器
+    var Editor
+    $(function () {
+        Editor = editormd("description", {
+            width: "100%",
+            height: 500,
+            toolbarIcons: function () {
+                return ["bold", "italic", "quote", "|", "h1", "h2", "h3", "|", "list-ul", "list-ol", "hr", "|", "link", "image", "table", "preformatted-text", "preview"]
+            },
+            path: "/static/editor.md/lib/",
+            tex: false,
+            watch: false,
+            htmlDecode: true,
+            flowChart: false,
+            autoFocus: false,
+            sequenceDiagram: false,
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png"],
+            imageUploadURL: "/my/doupimg",
+            syncScrolling: "single",
+            placeholder: "",
+        })
+        Editor.setToolbarAutoFixed(false)
+    });
+    {/if}
+</script>
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

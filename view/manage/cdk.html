@@ -1,0 +1,98 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">Cdk管理</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="addcdk"><i class="layui-icon">&#xe654;</i>生成CDK</button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="Cfcdk_Table" lay-filter="Cfcdk_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfCdk_Controls">
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="delcdk">删除</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        table = layui.table
+        table.render({
+            elem: '#Cfcdk_Table',
+            url: '/Admin/CdkList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'item_id', title: '物品ID', align: 'center', sort: true},
+                {field: 'name', title: '物品名称', align: 'center', sort: true},
+                {field: 'code', title: 'cdk码', align: 'center', sort: true},
+                {field: 'status', title: '使用账号', align: 'center', sort: true},
+                {field: 'create_time', title: '创建时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfCdk_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(Cfcdk_Table)', function (obj) {
+            if (obj.event === 'addcdk') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加Cdk',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/AddCdk',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            }
+        });
+
+        table.on('tool(Cfcdk_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delcdk') {
+                layer.confirm('确定删除该Cdk吗？', function (index) {
+                    delcdk([data.id])
+                    layer.close(index);
+                });
+            }
+        });
+
+        function delcdk(ids) {
+            $.post('/Admin/delCdk', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('Cfcdk_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+
+
+
+
+    });
+</script>

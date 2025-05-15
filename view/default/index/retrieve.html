@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>找回密码 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-5 mx-auto">
+            <h3 class="login-heading my-5 text-center">找回密码：验证账号</h3>
+            <div class="text-center" id="alert_msg">
+            </div>
+            <form id="retPost" action="/account/doforgot" accept-charset="UTF-8" method="post">
+                <div class="form-group">
+                    <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="注册邮箱" required="" autofocus="">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="邮箱验证码" name="email_code" id="email_code">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="retsendButton" onclick="rethandleClick()">发送验证码</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="new_passwd" name="new_passwd" autocomplete="new-password" placeholder="新的密码（不少于6位）" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="new_passwd2" name="new_passwd2" placeholder="重复新的密码" required="">
+                </div>
+                <div class="form-group">
+                    <div class="media-body">
+                        <p class="mb-0">
+                            <input id=retrieve_code" name="retrieve_code" type="text" class="form-control  col-6" value="" placeholder="请输入右侧图片的验证码" autocomplete="off" maxlength="5" style="display: inline-block;">
+                            <img oncontextmenu="return false;" ondragstart="return false;" style="cursor:pointer;margin-top: -5px;z-index: 1;display: inline-block;margin-left: 5px;" src="{:captcha_src()}" height="30px" width="90px" title="点击刷新" id="code_img" onclick="this.src='{:captcha_src()}?rand=' + Math.random();"></p>
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block btn-login mb-2" id="submit-btn" type="submit">提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

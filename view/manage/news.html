@@ -1,0 +1,159 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">新闻列表</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="delNews"><i class="layui-icon">&#xe654;</i>删除选中</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="deleteNews"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <script type="text/html" id="CfNews_Controls">
+                <a class="layui-btn layui-btn-primary layui-btn-xs data-count-editNews"  lay-event="editNews">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs data-count-delNews"  lay-event="delNews">删除</a>
+            </script>
+            <table class="layui-hide" id="CfNews_Table" lay-filter="CfNews_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfNews_Table',
+            url: '/Admin/AjaxNewsList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', title: 'id', align: 'center'},
+                {field: 'title', title: '标题', align: 'center', sort: true},
+                {field: 'sid', title: '分类',templet:function(d){
+                        if (d.sid == 1){
+                            return '网站公告'
+                        } else{
+                            return '新闻资讯'
+                        }
+                    }},
+                {field: 'create_time', title: '发布时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfNews_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        form.on('submit(SenSearch)', function(data){
+            table.reload('CfNews_Table', {
+                where: data.field
+            });
+            return false;
+        });
+        function delNews(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delNewsAll?id=' + ids.join("."),
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfNews_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        function deleteNews(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/deleteNews',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfNews_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+
+        table.on('toolbar(CfNews_Table)', function (obj) {
+            if (obj.event === 'deleteNews') {  // 监听删除操作
+                layer.confirm('确定要删除全部？', function () {
+                    deleteNews()
+                })
+            } else if (obj.event === 'delNews') {
+                layer.confirm('确定要删除选中的资源吗？', function () {
+                    var checkStatus = table.checkStatus('CfNews_Table')
+                        , data = checkStatus.data;
+                    const ids = []
+                    for (const dataKey in data) {
+                        ids.push(data[dataKey].id)
+                    }
+                    delNews(ids)
+                })
+            }
+        });
+
+        table.on('tool(CfNews_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'editNews') {
+                var id = data.id;
+                // 构建跳转链接
+                var url = "/manage#/editNews/" + id;
+
+                // 跳转到编辑页面
+                window.location.href = url;
+
+                return false;
+            } else if (obj.event === 'delNews') {
+                layer.confirm('确定删除该文章吗？', function (index) {
+                    delNews([data.id])
+                    layer.close(index);
+                });
+            }
+        });
+
+
+
+        function delNews(ids) {
+            $.post('/Admin/delNews', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfNews_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+    });
+</script>

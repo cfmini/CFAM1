@@ -1,0 +1,134 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">注册记录</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="type">
+                            <option value="username">账号</option>
+                            <option value="email">邮箱</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn btn-item" lay-submit lay-filter="SenSearch"><i class="layui-icon layui-icon-search button-btn"></i></button>
+                    </div>
+                </div>
+            </div>
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="delRegLog"><i class="layui-icon">&#xe654;</i>删除选中</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfRegLog_Table" lay-filter="CfRegLog_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfRegLog_Table',
+            url: '/Admin/AjaxRegLog',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'username', title: '账号', align: 'center', sort: true},
+                {field: 'password', title: '密码', align: 'center', sort: true},
+                {field: 'email', title: '邮箱', align: 'center', sort: true},
+                {field: 'ip', title: 'ip', align: 'center', sort: true},
+                {field: 'status', title: '状态', align: 'center', sort: true},
+                {field: 'create_time', title: '注册时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        form.on('submit(SenSearch)', function(data){
+            table.reload('CfRegLog_Table', {
+                where: data.field
+            });
+            return false;
+        });
+        function dellog(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delLog?id=' + ids.join("."),
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfRegLog_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        function delAll(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delRegAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfRegLog_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+
+
+        table.on('toolbar(CfRegLog_Table)', function (obj) {
+            if (obj.event === 'delRegLog') {
+                layer.confirm('确定要删除选中的资源吗？', function () {
+                    var checkStatus = table.checkStatus('CfRegLog_Table')
+                        , data = checkStatus.data;
+                    const ids = []
+                    for (const dataKey in data) {
+                        ids.push(data[dataKey].id)
+                    }
+                    dellog(ids)
+                })
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部注册记录吗删除后不可恢复？', function () {
+                    delAll()
+                })
+            }
+        });
+
+
+    });
+</script>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>物品发送 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+    <style>
+        .pagination>li {
+            display: inline;
+        }
+        li {
+            list-style: none;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>li:first-child>a, .pagination>li:first-child>span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+
+
+
+    <div class="alert alert-primary" role="alert">
+        只能发送给自己的账号，发送成功后需要小退一下！
+    </div>
+    <!-- <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand">共有{$count}件物品</a>
+        <form action="/send" method="get" class="form-inline my-2 my-lg-0">
+            <input type="text" name="keyword" value="" class="form-control mr-sm-2" placeholder="搜索商品...">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+    </nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand">共有{$count}件物品</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="/send" class="nav-link ">全部
+                        <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-toggle="dropdown" aria-expanded="false">选择分类：{$type}</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/send/?type=C">角色</a>
+                        <a class="dropdown-item" href="/send/?type=D">装备</a>
+                        <a class="dropdown-item" href="/send/?type=F">道具</a>
+                        <a class="dropdown-item" href="/send/?type=S">背包</a>
+                        <a class="dropdown-item" href="/send/?type=W">武器</a>
+                    </div>
+                </li>          
+            </ul>
+            <form id="searchForm" action="/send" method="get" class="form-inline my-2 my-lg-0">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-outline-secondary dropdown-toggle arg-name" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">搜索类型</button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item arg" href="#">NAME</a>
+                        <a class="dropdown-item arg" href="#">ITEM_ID</a>
+                        <a class="dropdown-item arg" href="#">ITEM_CODE</a>
+                        <a class="dropdown-item arg" href="#">ITEM_INDEX</a>
+                      </div>
+                    </div>
+                    <input type="hidden" name="type" value="">
+                    <input type="hidden" name="arg" value="">
+                    <input type="text" name="keyword" value="" class="form-control mr-sm-2" placeholder="搜索物品...">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                  </div>
+            </form>
+        </div>
+    </nav>
+    <script>
+        $(document).ready(function(){
+            $('.arg').click(function(){
+                var selectedType = $(this).text();
+                $('.arg-name').text(selectedType);
+                $('input[name="arg"]').val(selectedType);
+            });
+        
+            $('#searchForm').submit(function(){
+                var searchType = $('.arg-name').text();
+                $('input[name="arg"]').val(searchType);
+
+                var selectedCategory = $('.navbar-nav .active').text().trim();
+                var currentURL = window.location.href;
+                var queryParams = window.location.search;
+                var params = new URLSearchParams(queryParams);
+                var typeParam = params.get('type');
+
+                if (searchType.trim() === '搜索类型') {
+                    event.preventDefault(); 
+                    layer.msg("请选择搜索类型", { icon: 2 });
+                    return false; 
+                }
+
+                var keywordValue = $('input[name="keyword"]').val().trim();
+                if (keywordValue === '') {
+                    event.preventDefault(); 
+                    alayer.msg("请输入关键词", { icon: 2 });
+                    return false; 
+                }
+                if(selectedCategory !== "全部"){
+                    $('input[name="type"]').val(typeParam);
+                }
+            });
+        });
+    </script>
+
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="row">
+                {foreach $items as $item}
+                <div class="col-md-3">
+                    <div class="card mb-5 shadow-sm">
+                        <img class="card-img-top" height="150" src="{:getIiemImg($item['ITEM_INDEX'],$item['ITEM_CODE'])}" alt="cover">
+                        <div class="card-body">
+                            <p class="card-text">
+                                {$item.NAME}  
+                            </p>
+                            <p class="card-text d-flex justify-content-between">
+                                <span>
+                                    <span class="text-danger">
+                                        <button type="button" class="btn btn-primary" onclick="SendAjax('{$item.ITEM_ID}')">发送物品</button>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+            <nav>
+                <div class="pagination small justify-content-center mt-5">
+                    {$items|raw}
+                </div>
+            </nav>
+        </div>
+    </div>
+    
+</div>
+{include file="/default/common/footer" /}
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

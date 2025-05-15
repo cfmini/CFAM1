@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="/static/css/global.css" media="all">
+<div class="layui-fluid">
+    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">注册赠送物品</div>
+            <div class="layui-card-body">
+                <div class="layui-form layui-form-pane">
+                    如果添加后不生效请重启服务器即可生效，物品名称可随意填写。<a href="javascript:;" lay-href="CfItem">物品代码大全</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-form layui-form-pane">
+                <div class="larry-personal layui-collapse">
+                    <div class="layui-card">
+                        <div class="layui-card-header">添加物品</div>
+                        <div class="layui-card-body">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">物品ID</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="item_id" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">物品名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="name" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">开始时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" id="start_data" placeholder="yyyy-MM-dd HH:mm:ss">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">结束时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" id="end_data" placeholder="yyyy-MM-dd HH:mm:ss">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="AddGive">新增物品</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="larry-personal layui-collapse">
+                <div class="layui-colla-item">
+                    <div class="layui-card-header">物品列表</div>
+                    <div class="block__list_words">
+                        <ul>
+                            {foreach $res as $item}
+                            <li>{$item.ITEM_ID} | {$item.EVT_DESC} | {$item.GIVE_START_DATE} | {$item.GIVE_END_DATE}
+                                <div style="float:right">
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs"
+                                       onclick="delGive(this,'{$item.EVT_SRL}')" href="javascript:"><i
+                                            class="layui-icon layui-icon-delete"></i>删除</a>
+                                </div>
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['laydate', 'form',  'table'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,router = layui.router()
+        table = layui.table
+        laydate = layui.laydate;
+
+        form.render();
+        laydate.render({
+            elem: '#start_data'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#end_data'
+            ,type: 'datetime'
+        });
+
+        //提交
+        form.on('submit(AddGive)', function (data) {
+            var item_id = $("#item_id").val();
+            var name= $("#name").val();
+            var start_data= $("#start_data").val();
+            var end_data= $("#end_data").val();
+            if (item_id == '' && name == '' && end_data == '' && start_data == '') {
+                layer.msg('所有选项都不能为空', { icon: 2 });
+            }else{
+                layer.confirm('物品ID：' + item_id + '</br>物品名称：' + name + '<br>开始时间：'+ start_data + '<br>结束时间：'+ end_data, {
+                    btn: ['确定', '取消'],
+                    title: '新增物品'
+                }, function() {
+                    var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                    $.ajax({
+                        url: "/Admin/AddGive",
+                        type: "POST",
+                        data: { item_id: item_id ,name:name , start_data: start_data ,end_data:end_data},
+                        success: function(data) {
+                            if (data.code === 200) {
+                                layer.msg(data.msg, { icon: 1 });
+                                location.reload();
+                            } else {
+                                layer.msg(data.msg, { icon: 2 });
+                            }
+                            layer.close(load_show); // 关闭加载提示消息
+                        },
+                        error: function(xhr, status, error) {
+                            // 处理错误
+                            layer.close(load_show); // 在出现错误时关闭加载提示消息
+                        }
+                    });
+                }, function() {
+
+                });
+            }
+            return false
+        })
+    });
+
+
+    function delGive(entity, id) {
+        layui.use('jquery', function () {
+            $ = layui.jquery;
+            layer.confirm('确认从列表删除吗？', {
+                icon: 3,
+                title: '删除'
+            }, function () {
+                var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                $.ajax({
+                    url: "/Admin/delGive",
+                    type: "POST",
+                    data: { id: id},
+                    success: function(data) {
+                        if (data.code === 200) {
+                            layer.msg(data.msg, { icon: 1 });
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg, { icon: 2 });
+                        }
+                        layer.close(load_show); // 关闭加载提示消息
+                    },
+                    error: function(xhr, status, error) {
+                        // 处理错误
+                        layer.close(load_show); // 在出现错误时关闭加载提示消息
+                    }
+                });
+            }, function() {
+
+            });
+        });
+    }
+</script>

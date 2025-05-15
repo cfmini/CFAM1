@@ -1,0 +1,40 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">账号管理</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfUserGM_Table" lay-filter="CfUserGM_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfUserGM_Table',
+            url: '/Admin/AjaxCfUserGmList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'USN', title: 'USN', align: 'center'},
+                {field: 'NICK', title: '角色名', align: 'center', sort: true},
+                {field: 'EMAIL', title: '邮箱', align: 'center', sort: true},
+                {field: 'REG_DATE', title: '注册时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfUser_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+
+    });
+</script>

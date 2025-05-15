@@ -1,0 +1,84 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">在线用户</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfUserOnline_Table" lay-filter="CfUserOnline_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfUserOnline_Controls">
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-Kick"  lay-event="Kick">踢出封号</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-DiyKick"  lay-event="DiyKick">自定义封号</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfUserOnline_Table',
+            url: '/Admin/CfUserOnlineList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'USN', title: '用户ID', width: 100,align: 'center'},
+                {field: 'NICK', title: '用户昵称', width: 200,align: 'center'},
+                {field: 'LAST_PLAY_DATE', title: '最近游戏', align: 'center'},
+                {field: 'USER_IP', title: '用户IP', align: 'center'},
+                {title: '操作', toolbar: '#CfUserOnline_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        table.on('tool(CfUserOnline_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'Kick') {
+                layer.confirm('确定踢出该用户并封号？', function (index) {
+                    Kick(data.USN,data.NICK)
+                    layer.close(index);
+                });
+            } else if (obj.event === 'DiyKick'){
+                var index = layer.open({
+                    title: '自定义封号',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/DiyKick?id=' + data.USN,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+
+            }
+        });
+
+        function Kick(ids,NICK) {
+            $.post('/Admin/Kick', {
+                id: ids,
+                nick:NICK
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('Cfcha_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+    });
+</script>

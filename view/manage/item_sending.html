@@ -1,0 +1,87 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">发送记录</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="type">
+                            <option value="SENDER_USN">USN</option>
+                            <option value="GIVEN">物品ID</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn btn-item" lay-submit lay-filter="SenSearch"><i class="layui-icon layui-icon-search button-btn"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfItemsend_Table" lay-filter="CfItemsend_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        table = layui.table
+        form.render(null, 'front-formlist');
+        table.render({
+            elem: '#CfItemsend_Table',
+            url: '/Admin/AjaxSendItemLog',
+            toolbar: '#SenTool',
+            cols: [[
+                {field: 'USN', title: 'USN', align: 'center'},
+                {field: 'NICK', title: '游戏名', align: 'center', sort: true},
+                {field: 'GIVEN', title: '物品ID', align: 'center', sort: true},
+                {field: 'ITEM_NAME', title: '物品名称', align: 'center', sort: true},
+                {field: 'SHORT_NAME', title: 'SHORT_NAME', align: 'center', sort: true},
+                {field: 'CHINA_NAME', title: '中文名称', align: 'center', sort: true},
+                {field: 'ITEM_ING', width: 100, title: '缩略图',templet:function(d){
+                        return `<img src="${d.ITEM_ING}" width="100%" onclick="window.open('${d.ITEM_ING}')"/>`
+                    }},
+                {field: 'REG_DATE', title: '发送时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        form.on('submit(SenSearch)', function(data){
+            table.reload('CfItemsend_Table', {
+                where: data.field
+            });
+            return false;
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('tool(CfItem_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'getItem') {
+                var index = layer.open({
+                    title: '充值',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/SendItem?id=' + data.ITEM_ID,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            }
+        });
+    });
+</script>

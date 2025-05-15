@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>用户中心 - {$configs.website} - 垃圾游戏操你麻痹带你飞</title>
+    {include file="/default/common/header" /}
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <style>
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="row">
+        {include file="/default/user/nav" /}
+        <div class="col-lg-9">
+            <div class="card card-outline-secondary mt-1 mb-2">
+                <div class="card-header d-flex justify-content-between">
+                    <div>个人信息</div>
+                    <div>
+                        {if $qq == ''}
+                        <button type="button" class="btn btn-sm btn-primary" onclick="qqbinding()">
+                            <i class="bi bi-tencent-qq"></i>
+                            绑定QQ
+                        </button>
+                        {/if}
+                        <a href="#" type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editModal">修改密码</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {if $qq != ''}
+                    <div class="alert alert-primary" role="alert">
+                        <img src="{$qq.pic}" class="rounded-circle mr-1" width="20" alt="avatar">{$qq.qqname}    
+                        <a href="/ajax/unbind/" class="small text-danger">解除绑定</a>                                                        
+                    </div>
+                    {/if}
+                    <ul class="list-unstyled">
+                        <p>账号：{$userinfo.LUSER_ID}</p>
+                        <p>邮箱：{$userinfo.EMAIL}</p>
+                        <p>角色名：{$nick}</p>
+                        <p>GP点：{$gp}</p>
+                        <p>CF点：{$cf}</p>
+                    </ul>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框容器 -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改密码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="post">
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="passwd" name="passwd" placeholder="当前密码" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="new_passwd" name="new_passwd" minlength="6" placeholder="新的密码（不少于6位）" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="new_passwd2" name="new_passwd2" minlength="6" placeholder="重复新的密码" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" id="saveBtn" class="btn btn-sm btn-success">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#saveBtn").click(function () {
+        var form = $("#editForm");
+        var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+        $.ajax({
+            url: '/user/uppasswd',
+            type: 'POST',
+            dataType: 'json',
+            data: form.serialize(),
+            success: function(data) {
+                if (data.code === 200) {
+                    layer.msg(data.msg, {icon: 1});
+                    window.location.href = '/index/logout';
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            },
+            error: function (xhr, status, error) {
+                // 处理请求失败的逻辑
+                layer.close(load_show);
+            }
+        });
+    });
+    function qqbinding() {
+      // Replace '/api/qq' with the actual URL you want to redirect to
+      window.location.href = '/ajax/qqbinding';
+    }
+</script>
+{include file="/default/common/footer" /}
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">快捷方式</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="home/homepage1">
+                                                <i class="layui-icon layui-icon-console"></i>
+                                                <cite>系统设置</cite>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">站内统计</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-carousel layadmin-carousel layadmin-backlog">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>注册用户</h3>
+                                                <p class="layuiadmin-big-font" style="color: #01AAED;"><cite>{$NumUser}</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>在线人数</h3>
+                                                <p class="layuiadmin-big-font" style="color: #FF5722;"><cite>{$onlineCf}</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>商品总数</h3>
+                                                <p><cite>{$shopNum}</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>数据库物品</h3>
+                                                <p><cite>{$last_sysinfo.NumItem}</cite></p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            赞助推荐
+                            <span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a lay-href="/" class="layui-btn layui-btn-primary layui-btn-xs">AD</a></span>
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="layui-carousel" id="banner">
+                                <div carousel-item="">
+                                    <a href="/"target="_blank" lay-tips="LitePress"><img style="height:100%;width:100%" src="https://api.picurl.cn/redir/077b9d4331dcd73c2e4e7ba7ae2c9506.jpg"><span class="carouselpic">CF操你妈后台管理系统</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">版本信息</div>
+                <div class="layui-card-body layui-text">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="100">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>当前版本</td>
+                            <td>
+                                <script type="text/html" template>
+                                    V1.3
+                                    <a href="https://houz.cn" target="_blank" style="padding-left: 10px;">日志</a>
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>基于框架</td>
+                            <td>
+                                <script type="text/html" template>
+                                    layui-v{{ layui.v }}
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>主要特色</td>
+                            <td>单页面 / 响应式 / 清爽 / 极简</td>
+                        </tr>
+                        <tr>
+                            <td>获取渠道</td>
+                            <td style="padding-bottom: 0;">
+                                <div class="layui-btn-container">
+                                    <a href="https://houz.cn" target="_blank"
+                                       class="layui-btn layui-btn-danger">获取授权</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-card">
+                <div class="layui-card-header">性能监控<span class="layuiadmin-span-color">上行<span id="up">{$last_sysinfo.up}</span> / 下行<span id="down">{$last_sysinfo.down}</span></span></div>
+                <div class="layui-card-body layadmin-takerates">
+                    <div class="layui-progress" lay-showPercent="yes" lay-filter="cpu">
+                        <h3>CPU使用率</h3>
+                        <div id="cpu" class="layui-progress-bar" lay-percent="{$last_sysinfo.cpu}"></div>
+                    </div>
+                    <div class="layui-progress" lay-showPercent="yes" lay-filter="mem">
+                        <h3>内存占用率(<span id="memRealUsed">{$last_sysinfo.memRealUsed}</span>MB/<span id="memTotal">{$last_sysinfo.memTotal}</span>MB)</h3>
+                        <div id="mem" class="layui-progress-bar" lay-percent="56.9%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card">
+                <div class="layui-card-header">存储负载</div>
+                <div class="layui-card-body layadmin-takerates">
+                    <div class="layui-progress" lay-showPercent="yes" lay-filter="load">
+                        <h3>综合负载</h3>
+                        <div id="load" class="layui-progress-bar" lay-percent="{$last_sysinfo.load}"></div>
+                    </div>
+                    <div class="layui-progress" lay-showPercent="yes" lay-filter="disk">
+                        <h3>存储空间(<span id="SIzeDisk">{$last_sysinfo.diskb}</span>/<span id="SIzeDisks">{$last_sysinfo.diska}</span>)</h3>
+                        <div id="disk" class="layui-progress-bar" lay-percent="{$last_sysinfo.disk}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">最新注册</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table layuiadmin-page-table" lay-skin="line">
+                            <colgroup>
+                                <col width = '50%'>
+                                <col width = '40%'>
+                                <col width = '10%'>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>账号</th>
+                                <th>邮箱</th>
+                                <th>IP</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ssbfb">
+                            <tr>
+                                <td>数据加载中...</td><td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">最近游戏</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table layuiadmin-page-table" lay-skin="line">
+                            <colgroup>
+                                <col width = '50%'>
+                                <col width = '50%'>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>登录时间</th>
+                            </tr>
+                            </thead>
+                            <tbody id="xdls">
+                            <tr>
+                                <td>数据加载中...</td><td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    layui.use(['admin', 'carousel', 'form'], function(e) {
+        var e = layui.$
+        t = (layui.admin, layui.carousel),
+            a = layui.element,
+            i = layui.device(),
+            $ = layui.jquery,
+            form = layui.form,
+            carousel = layui.carousel,
+            element = layui.element,
+            admin = layui.admin;
+        if (typeof(loads) != "undefined") {
+            clearInterval(loads);
+        }
+        var UserNum = $("#UserNum").numberAnimate({
+            num: '{$last_sysinfo.NumUser}',
+            speed: 2000,
+        });
+        var OrdNum = $("#OrdNum").numberAnimate({
+            num: '{$last_sysinfo.onlineCf}',
+            speed: 2000,
+        });
+        carousel.render({
+            elem: '#banner',
+            width: '100%',
+            anim: 'fade',
+            indicator: 'none',
+            height: '333px',
+            interval: 3000
+        });
+        var loadfuck = 0;
+
+        function load() {
+            if (loadfuck < 10000) {
+                //console.log(new Date());
+                $.post("/manage/load", function(data) {
+                    if (data.code === 0) {
+                        layui.element.progress('load', data.data.load);
+                        layui.element.progress('disk', data.data.disk);
+                        layui.element.progress('cpu', data.data.cpu);
+                        layui.element.progress('mem', data.data.mem);
+                        $('#cpu').attr("class", data.data.cpus);
+                        $('#mem').attr("class", data.data.mems);
+                        $('#load').attr("class", data.data.loads);
+                        $('#disk').attr("class", data.data.disks);
+                        $('#SizeDisk').html(data.data.SizeDisk);
+                        $('#SizeDisks').html(data.data.SizeDisks);
+                        $("#up").html(data.data.up);
+                        $("#down").html(data.data.down);
+                        $("#memRealUsed").html(data.data.memRealUsed);
+                        $("#memTotal").html(data.data.memTotal);
+                        $("#ssbfb").html(data.data.ssbfb);
+                        $("#xdls").html(data.data.xdls);
+                        $("#bl").html(data.data.bl);
+                        $("#zl").html(data.data.zl);
+                        $("#hy").html(data.data.hy);
+                        UserNum.resetData(data.data.NumUser);
+                        OrdNum.resetData(data.data.onlineCf);
+                        //tooltip();
+                    }
+                });
+                loadfuck++;
+                //console.log(loadfuck);
+            }
+        }
+        loads = setInterval(load, 5500);
+        e(".layadmin-carousel").each(function() {
+            var a = e(this);
+            t.render({
+                elem: this,
+                width: "100%",
+                arrow: "none",
+                interval: a.data("interval"),
+                autoplay: a.data("autoplay") === !0,
+                trigger: i.ios || i.android ? "click" : "hover",
+                anim: a.data("anim")
+            })
+        }), a.render("progress")
+    })
+
+    if (typeof(text) != "undefined") {
+        clearInterval(text);
+    }
+
+    function AutoScroll(a) {
+        //console.log(new Date());
+        $(a).find("ul:first").animate({
+            marginTop: "-10px"
+        }, 300, function() {
+            $(this).css({
+                marginTop: "0px"
+            }).find("li:first").appendTo(this)
+        })
+    }
+
+</script>

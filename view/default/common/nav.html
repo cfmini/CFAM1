@@ -1,0 +1,30 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm" id="top-bar">
+    <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/" class="text-white">{$configs.website}</a></h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-white" href="/">首页</a>
+        <a class="p-2 text-white" href="/news">新闻公告</a>
+        <a class="p-2 text-white" href="/shop">在线商城</a>
+        <a class="p-2 text-white" href="/activity">免费活动</a>
+        <a class="p-2 text-white" href="/feedback">举报申诉</a>
+		<a class="p-2 text-white" href="/index/a20240506">抽奖活动</a>
+        {if $Sendinfo != null}
+        <a class="p-2 text-white" href="/send">物品发送</a>
+        {/if}
+    </nav>
+    <nav class="my-2 my-md-0 mr-md-3">
+        {if session('USER_LOGIN_ID')}
+            <a class="btn btn-sm btn-primary" href="/user"><span class="iconfont icon-User"></span> 我的</a>
+            <a class="btn btn-sm btn-primary" href="/index/logout"><span class="iconfont icon-logout"></span> 退出</a>
+        {else}
+            <a class="btn btn-sm btn-info" href="/login">登录</a>
+            {if $configs.qq != 3}
+            <a class="btn btn-sm btn-success" href="/register">注册</a>
+            {else}
+            <button type="button" class="btn btn-sm btn-success" onclick="redirectToQQ()">
+                <i class="bi bi-tencent-qq"></i>
+                注册
+            </button>
+            {/if}
+        {/if}
+    </nav>
+</div>

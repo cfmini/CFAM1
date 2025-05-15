@@ -1,0 +1,198 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">账号管理</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="type">
+                            <option value="USER_ID">账号</option>
+                            <option value="EMAIL">邮箱</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-useradmin" lay-submit
+                                lay-filter="user-front-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="adduser"><i class="layui-icon">&#xe654;</i>添加用户</button>
+<!--                    <button class="layui-btn layui-btn-sm layui-btn-danger data-add-btn" lay-event="upmoney"><i class="layui-icon">&#xe654;</i>给所有人充值</button>-->
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfUser_Table" lay-filter="CfUser_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfUser_Controls">
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-info"  lay-event="info">详细</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-pass"  lay-event="pass">密码</a>
+    <a class="layui-btn layui-btn layui-btn-xs data-count-upcf"  lay-event="upcf">充值</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="delCfUser">删除</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfUser_Table',
+            url: '/Admin/AjaxCfUserList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'USN', title: 'USN', align: 'center', width: 100},
+                {field: 'USER_ID', title: '账号', align: 'center', sort: true},
+                {field: 'NICK', title: '角色名', align: 'center', sort: true},
+                {field: 'CF', title: 'CF点', align: 'center', sort: true},
+                {field: 'EMAIL', title: '邮箱', align: 'center', sort: true},
+                {field: 'REG_DATE', title: '注册时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfUser_Controls', align: 'center', width: 300}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(CfUser_Table)', function (obj) {
+            if (obj.event === 'adduser') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/AddCfuser',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'upmoney'){
+                layer.prompt({ title: '给所有人充值', formType: 0 }, function (money, index) {
+                    if (money.trim() === '') {
+                        layer.msg('充值金额不能为空', { icon: 2 });
+                        return false;
+                    }
+
+                    var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+
+                    $.post('/Admin/UpMoneyAll', { money: money }, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(res.msg, { icon: 1 });
+                            table.reload('CfUser_Table');
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+
+                        layer.close(load_show);
+
+                    }, 'json');
+
+                    layer.close(index);
+                });
+
+            }
+        });
+        //监听搜索
+        form.on('submit(user-front-search)', function(data){
+            table.reload('CfUser_Table', {
+                where: data.field
+            });
+            return false;
+        });
+
+
+        table.on('tool(CfUser_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'upcf') {
+                var index = layer.open({
+                    title: '充值',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/upcf?id=' + data.USN,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delCfUser') {
+                layer.confirm('确定删除该用户吗？', function (index) {
+                    delCfUser([data.USN])
+                    layer.close(index);
+                });
+            } else if (obj.event === 'pass'){
+                layer.prompt({ title: '请输入新的密码', formType: 0 }, function (password, index) {
+                    if (password.trim() === '') {
+                        layer.msg('密码不能为空', { icon: 2 });
+                        return false;
+                    }
+
+                    if (password.length > 15) {
+                        layer.msg('密码不能超过15位', { icon: 2 });
+                        return false;
+                    }
+
+                    if (/\s/.test(password)) {
+                        layer.msg('密码不能包含空格', { icon: 2 });
+                        return false;
+                    }
+                    var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                    $.post('/Admin/Editpass', { usn: data.USN, password: password }, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(res.msg, { icon: 1 });
+                            table.reload('CfUser_Table');
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                        layer.close(load_show);
+                    }, 'json');
+                    layer.close(index);
+                });
+            }
+        });
+
+        function delCfUser(ids) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            $.post('/Admin/delCfUser', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfUser_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            }, 'json');
+        }
+
+    });
+</script>

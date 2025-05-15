@@ -1,0 +1,73 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">使用记录</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfCkdLog_Table" lay-filter="CfCkdLog_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+
+        table = layui.table
+        table.render({
+            elem: '#CfCkdLog_Table',
+            url: '/Admin/AjaxCdkLog',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'id', title: 'id', align: 'center'},
+                {field: 'user', title: '账号', align: 'center', sort: true},
+                {field: 'name', title: 'Cdk名称', align: 'center', sort: true},
+                {field: 'cdk', title: 'cdk', align: 'center', sort: true},
+                {field: 'create_time', title: '使用时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+
+
+        function delAll(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delCdkAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfCkdLog_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        table.on('toolbar(CfCkdLog_Table)', function (obj) {
+            if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部注册记录吗删除后不可恢复？', function () {
+                    delAll()
+                })
+            }
+        });
+    });
+</script>

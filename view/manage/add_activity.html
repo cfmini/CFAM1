@@ -1,0 +1,105 @@
+<title>添加活动</title>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">添加活动</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form layui-form-pane">
+                        <blockquote class="layui-elem-quote">如果选择的是物品道具就需要填写正确的物品代码否则可能会出现道具错误信息。<br>特殊活动类型一般为清空全部角色CF点的时候选择的，用户只有CF点为0的时候才可以领取</blockquote>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">活动类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="type" value="1" title="CF点" checked>
+                                <input type="radio" name="type" value="2" title="GP" >
+                                <input type="radio" name="type" value="3" title="物品道具" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">其他类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="argument" value="1" title="普通类型" checked>
+                                <input type="radio" name="argument" value="2" title="特殊类型" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">活动标题</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="title" id="title" placeholder="请输入活动标题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">活动参数</label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="value" id="value" placeholder="填写数量或者物品ID" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">活动描述</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="content" id="content" placeholder="请输入活动描述" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">活动图片</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="pic" id="pic" placeholder="请填写活动图片外链" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">活动状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="开启" checked>
+                                <input type="radio" name="status" value="0" title="关闭" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="add">立即发布</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'user'], function(){
+        var $ = layui.$
+            ,form = layui.form
+        form.render();
+        form.on('submit(add)', function(obj){
+
+            //请求登入接口
+            $.ajax({
+                url:"/Admin/AddActivity",
+                data:obj.field,
+                type:"Post",
+                dataType:"json",
+                success:function(data){
+                    if(data.code==200){
+                        layer.msg(data.msg, {icon: 1});
+                        setTimeout(function(){
+                            window.location.href = "manage#/Activity";
+                        }, 2000);
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                }
+            });
+
+        });
+
+    });
+</script>

@@ -1,0 +1,74 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">登入日记</div>
+        <div class="layui-card-body">
+            {if $userinfo['rank'] ==1}
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            {/if}
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="AdminLog_Table" lay-filter="AdminLog_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+
+        table = layui.table
+        table.render({
+            elem: '#AdminLog_Table',
+            url: '/Admin/AjaxAdminLog',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'id', title: 'id', align: 'center'},
+                {field: 'users', title: '账号', align: 'center'},
+                {field: 'ip', title: 'ip', align: 'center', sort: true},
+                {field: 'create_time', title: '登入时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        {if $userinfo['rank'] ==1}
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(AdminLog_Table)', function (obj) {
+            if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部登录记录吗删除后不可恢复？', function () {
+                    delAll()
+                })
+            }
+        });
+
+        function delAll() {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delAdminLodAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('AdminLog_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+        {/if}
+    });
+</script>

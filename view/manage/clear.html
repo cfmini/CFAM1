@@ -1,0 +1,245 @@
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">一键删除用户<span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a href="javascript:;" onclick="rfuser();return false;" class="layui-btn layui-btn-xs layui-btn-normal">清空</a></span></div>
+                <div class="layui-card-body">
+                    一键删除全部用户（谨慎操作）
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">一键删除角色<span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a href="javascript:;" onclick="rfcha();return false;" class="layui-btn layui-btn-xs layui-btn-normal">清空</a></span></div>
+                <div class="layui-card-body">
+                    一键删除所有角色，未创建角色不受影响
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">一键清空角色背包<span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a href="javascript:;" onclick="rfinv();return false;" class="layui-btn layui-btn-xs layui-btn-normal">清空</a></span></div>
+                <div class="layui-card-body">
+                    一键删除所有账号仓库（谨慎操作）
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">一键删除发送记录<span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a href="javascript:;" onclick="rfItemSending();return false;" class="layui-btn layui-btn-xs layui-btn-normal">清空</a></span></div>
+                <div class="layui-card-body">
+                    一键删除所有发送物品记录
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">一键清空人物点劵<span class="layui-badge layuiadmin-badge" style="background-color:transparent"><a href="javascript:;" onclick="rfcf();return false;" class="layui-btn layui-btn-xs layui-btn-normal">清空</a></span></div>
+                <div class="layui-card-body">
+                    一键删除全部人物点劵
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+        </div>
+    </div>
+</div>
+<script>
+    window.rfuser = function () {
+        layer.confirm('确认清空所有注册用户？</br>清空后无法恢复！', {
+            icon: 3,
+            title: '清空注册用户'
+        }, function () {
+            layer.closeAll('dialog');
+            var index = layer.load(3);
+            $.post("/Admin/rfuser", function (data) {
+                layer.close(index);
+                if (data.code === 200) {
+                    layer.open({
+                        icon: 6,
+                        content: '清空成功，无法后悔！',
+                        title: '清空成功',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        icon: 5,
+                        content: data.msg?data.msg:'清空失败！请刷新页面后重试...',
+                        title: '清空失败',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    }
+    window.rfcha = function () {
+        layer.confirm('确认清空所有角色？</br>清空后无法恢复！', {
+            icon: 3,
+            title: '清空人物角色'
+        }, function () {
+            layer.closeAll('dialog');
+            var index = layer.load(3);
+            $.post("/Admin/rfcha", function (data) {
+                layer.close(index);
+                if (data.code === 200) {
+                    layer.open({
+                        icon: 6,
+                        content: '清空成功，无法后悔',
+                        title: '清空成功',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        icon: 5,
+                        content: data.msg?data.msg:'清空失败！请刷新页面后重试...',
+                        title: '清空失败',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    }
+    window.rfinv = function () {
+        layer.confirm('确认清空所有账号仓库 ？</br>清空后无法恢复！', {
+            icon: 3,
+            title: '清空人物角色'
+        }, function () {
+            layer.closeAll('dialog');
+            var index = layer.load(3);
+            $.post("/Admin/rfinv", function (data) {
+                layer.close(index);
+                if (data.code === 200) {
+                    layer.open({
+                        icon: 6,
+                        content: '清空成功，无法后悔',
+                        title: '清空成功',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        icon: 5,
+                        content: data.msg?data.msg:'清空失败！请刷新页面后重试...',
+                        title: '清空失败',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    }
+    window.rfItemSending = function () {
+        layer.confirm('确认清空所有发送无记录？</br>清空后无法恢复！', {
+            icon: 3,
+            title: '清空发送记录'
+        }, function () {
+            layer.closeAll('dialog');
+            var index = layer.load(3);
+            $.post("/Admin/rfItemSending", function (data) {
+                layer.close(index);
+                if (data.code === 200) {
+                    layer.open({
+                        icon: 6,
+                        content: '清空成功，无法后悔！',
+                        title: '清空成功',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        icon: 5,
+                        content: data.msg?data.msg:'清空失败！请刷新页面后重试...',
+                        title: '清空失败',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    }
+    window.rfcf = function () {
+        layer.confirm('确定清空所有角色点劵记录？</br>清空后无法恢复！', {
+            icon: 3,
+            title: '清空点劵'
+        }, function () {
+            layer.closeAll('dialog');
+            var index = layer.load(3);
+            $.post("/Admin/rfcf", function (data) {
+                layer.close(index);
+                if (data.code === 200) {
+                    layer.open({
+                        icon: 6,
+                        content: '清空成功，无法后悔',
+                        title: '清空成功',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        icon: 5,
+                        content: data.msg?data.msg:'清空失败！请刷新页面后重试...',
+                        title: '清空失败',
+                        btn: ['确认'],
+                        yes: function (index, layero) {
+                            location.reload();
+                        },
+                        cancel: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    }
+</script>

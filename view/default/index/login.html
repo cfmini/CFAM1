@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>登录 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<style>
+    .oauth-login-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+</style>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-5 mx-auto">
+            <h3 class="login-heading my-5 text-center">用户登录</h3>
+            <div class="text-center" id="alert_msg">
+            </div>
+            <form id="loginPost" accept-charset="UTF-8" method="post">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="账号" required="" autofocus="">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="密码" required="">
+                </div>
+                <div class="form-group">
+                    <div class="media-body">
+                        <p class="mb-0">
+                            <input id="logincode" name="logincode" type="text" class="form-control  col-6" value="" placeholder="请输入右侧图片的验证码" autocomplete="off" maxlength="5" style="display: inline-block;">
+                            <img oncontextmenu="return false;" ondragstart="return false;" style="cursor:pointer;margin-top: -5px;z-index: 1;display: inline-block;margin-left: 5px;" src="{:url('/loginCaptcha')}" height="30px" width="90px" title="点击刷新" id="code_img" onclick="this.src='{:url('/loginCaptcha')}?rand=' + Math.random();"></p>
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block btn-login mb-2" id="login-submit-btn" type="submit">登录</button>
+                <div class="text-center">
+                    <a class="small" href="/retrieve">忘记密码?</a>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <a class="mb-2" href="{if $configs.qq == 3}/ajax/qqlogin{else}/register{/if}">注册账号</a>
+                </div>
+                {if $configs.qq == 3}
+                <hr>
+                <div>
+                    <div class="mt-3 mb-3 oauth-login-btn">
+                        <a href="/ajax/qqlogin">
+                            <img src="https://api.picurl.cn/redir/a566e2b36bbda29855cb21fb4036cab8.jpg" alt="QQ">
+                        </a>
+                    </div>
+                    <div class="text-center small text-muted">请先注册账号，再绑定QQ才能使用</div>
+                </div>
+                {/if}
+            </form>
+        </div>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

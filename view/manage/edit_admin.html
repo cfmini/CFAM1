@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <form class="layui-form" action="" style="margin-top: 50px">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">用户组</label>
+                <div class="layui-input-block">
+                    <select name="rank" lay-filter="position">
+                        <option value="1" {if $info['rank'] == '1'}selected = "selected"{/if}>超级管理员</option>
+                        <option value="2" {if $info['rank'] == '2'}selected = "selected"{/if}>普通管理员</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" value="{$info.email}" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" value="{$info.username}" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" value="" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <select name="status" lay-filter="position">
+                        <option value="1" {if $info['status'] == '1'}selected = "selected"{/if}>启用</option>
+                        <option value="2" {if $info['status'] == '2'}selected = "selected"{/if}>停用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input hidden name="id" value="{$info.id}">
+                    <button class="layui-btn" lay-submit="" lay-filter="submitadmin">确认修改</button>
+                </div>
+            </div>
+    </form>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+    var index = parent.layer.getFrameIndex(window.name);
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#product-expired' //指定元素
+            , type: 'datetime'
+        });
+        form.on('submit(submitadmin)', function (data) {
+            layui.$.post("/Admin/EditAdmin", data.field, (res) => {
+                if (res.code == 200) {
+                    parent.table.reload('CfAdmin_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data')
+                    parent.layer.close(index)
+                }else{
+                    layer.msg(res.msg, {icon: 2});
+                }
+            })
+            return false
+        })
+    })
+</script>
+

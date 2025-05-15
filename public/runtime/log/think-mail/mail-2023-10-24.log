@@ -1,0 +1,14 @@
+[ 2023-10-24T17:30:01+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "503", with message "503 Error: need EHLO and AUTH first !".
+[ 2023-10-24T17:30:19+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "503", with message "503 Error: need EHLO and AUTH first !".
+[ 2023-10-24T17:32:50+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "503", with message "503 Error: need EHLO and AUTH first !".
+[ 2023-10-24T17:36:18+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".
+[ 2023-10-24T17:37:30+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".
+[ 2023-10-24T17:39:50+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".
+[ 2023-10-24T17:40:23+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".

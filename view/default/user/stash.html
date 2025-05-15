@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>仓库管理 - {$configs.website} - 垃圾游戏操你麻痹带你飞</title>
+    {include file="/default/common/header" /}
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <style>
+        .pagination>li {
+            display: inline;
+        }
+        li {
+            list-style: none;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>li:first-child>a, .pagination>li:first-child>span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="row">
+        {include file="/default/user/nav" /}
+        <div class="col-lg-9">
+            <div class="card card-outline-secondary mt-1 mb-2">
+                <div class="card-header d-flex justify-content-between">
+                    <div>仓库</div>
+                    <div>
+                        <button type="button" id="clear-backpack" class="btn btn-sm btn-primary">清空背包</button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <nav class="navbar navbar-light bg-light">
+                        <a class="navbar-brand">背包共有{$count}+</a>
+                        <form action="/user/stash" class="form-inline">
+                            <input class="form-control mr-sm-2" type="search" name="keyword" value="{$keyword}" placeholder="物品CODE...">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                        </form>
+                    </nav>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">物品CODE</th>
+                            <th scope="col">物品名称</th>
+                            <th scope="col">获得时间</th>
+                            <th scope="col">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $its as $item}
+                        <tr>
+                            <th scope="row">{$item.ITEM_CODE}</th>
+                            <td>{$item.itemname}</td>
+                            <td>{$item.EFF_START_DATE}</td>
+                            <td><button type="button" class="btn btn-sm btn-danger" onclick="delitem('{$item.INVENTORY_SRL}')">删除</button></td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <nav>
+                        {$list|raw}
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#clear-backpack').click(function() {
+            layer.confirm('确定要清空背包吗？', {
+                btn: ['确定', '取消'],
+                yes: function(index) {
+                    var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                    var id = {$userinfo.USN};
+                    $.ajax({
+                        url: '/user/clear_backpack',
+                        method: 'POST',
+                        data: { id: id},
+                        success: function(data) {
+                            if (data.code === 200) {
+                                layer.msg(data.msg, {icon: 1});
+                                setTimeout(function() {
+                                    location.reload(); // 延迟2秒后刷新页面
+                                }, 2000);
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                            layer.close(load_show);
+                        },
+                        error: function(xhr, status, error) {
+                        }
+                    });
+                }
+            });
+        });
+    });
+    function delitem(id) {
+        var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+        $.ajax({
+            url: "/user/delitem",
+            type: "POST",
+            data: { id: id},
+            success: function(data) {
+                if (data.code === 200) {
+                    layer.msg(data.msg, {icon: 1});
+                    setTimeout(function() {
+                        location.reload(); // 延迟2秒后刷新页面
+                    }, 2000);
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            },
+            error: function(xhr, status, error) {
+                layer.close(load_show);
+            }
+        });
+    }
+</script>
+{include file="/default/common/footer" /}
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+</body>
+</html>

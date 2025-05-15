@@ -1,0 +1,257 @@
+<title>网站设置</title>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">网站设置</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" wid100 lay-filter="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">网站名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="website" id="website" value="{$configs.website}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">副标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="sub" id="sub" value="{$configs.sub}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">密码特征</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="md5pass" id="md5pass" value="{$configs.md5pass}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">QQ群</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="qqqun" id="qqqun" value="{$configs.qqqun}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">模板选择</label>
+                            <div class="layui-input-block">
+                                <select name="template" id="template" lay-verify="">
+                                    <option value="default" {if $configs['template'] == 'default'}selected = "selected"{/if}>default</option>
+                                    <option value="TawRes" {if $configs['template'] == 'TawRes'}selected = "selected"{/if}>TawRes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册赠送CF点</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="cfpoint" id="cfpoint" value="{$configs.cfpoint}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">一IP注册一次</label>
+                            <div class="layui-input-block">
+                                <select name="ips" id="ips" lay-verify="">
+                                    <option value="1" {if $configs['ips'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['ips'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册开关</label>
+                            <div class="layui-input-block">
+                                <select name="Reg_Switch" id="register" lay-verify="">
+                                    <option value="1" {if $configs['Reg_Switch'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['Reg_Switch'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邀请码注册</label>
+                            <div class="layui-input-block">
+                                <select name="Code_Switch" id="code_reh" lay-verify="">
+                                    <option value="1" {if $configs['Code_Switch'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['Code_Switch'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">服务端URL</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="serverURL" id="serverURL" value="{$configs.serverURL}" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">服务端token</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="serverToKen" id="serverToKen" value="{$configs.serverToKen}" class="layui-input">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册方式</label>
+                            <div class="layui-input-block">
+                                <select name="qq" id="qq" lay-verify="">
+                                    <option value="1" {if $configs['qq'] == '1'}selected = "selected"{/if}>普通注册</option>
+                                    <option value="2" {if $configs['qq'] == '2'}selected = "selected"{/if}>严格注册</option>
+                                    <option value="3" {if $configs['qq'] == '3'}selected = "selected"{/if}>QQ注册</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮箱验证</label>
+                            <div class="layui-input-block">
+                                <select name="email" id="email" lay-verify="">
+                                    <option value="1" {if $configs['email'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['email'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">QQ邮箱注册</label>
+                            <div class="layui-input-block">
+                                <select name="qqtype" id="qqtype" lay-verify="">
+                                    <option value="1" {if $configs['qqtype'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['qqtype'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">apiurl</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="apiurl" id="apiurl" value="{$configs.apiurl}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">appid</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="appid" id="appid" value="{$configs.appid}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">appkey</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="appkey" id="appkey" value="{$configs.appkey}" class="layui-input">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载描述</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downdes" id="downdes" value="{$configs.downdes}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址一名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downname" id="downname" value="{$configs.downname}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址一版本</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="verone" id="verone" value="{$configs.verone}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址一时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downdate" id="downdate" value="{$configs.downdate}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址一地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downurl" id="downurl" value="{$configs.downurl}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址二名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downnamea" id="downnamea" value="{$configs.downnamea}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址二版本</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="veronet" id="veronet" value="{$configs.veronet}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址二时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downdatea" id="downdatea" value="{$configs.downdatea}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">下载地址二地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="downurla" id="downurla" value="{$configs.downurla}" class="layui-input">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">抽奖需点卷</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="ds" id="ds" value="{$configs.ds}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">未中奖概率</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="chance" id="chance" value="{$configs.chance}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">抽奖开关</label>
+                            <div class="layui-input-block">
+                                <select name="c_Switch" id="c_Switch" lay-verify="">
+                                    <option value="1" {if $configs['c_Switch'] == '1'}selected = "selected"{/if}>开启</option>
+                                    <option value="2" {if $configs['c_Switch'] == '2'}selected = "selected"{/if}>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="set_website">确认保存</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'user'], function(){
+        var $ = layui.$
+            ,setter = layui.setter
+            ,admin = layui.admin
+            ,form = layui.form
+            ,router = layui.router()
+            ,search = router.search;
+        form.render(null, 'front-formlist');
+        form.render();
+
+        //提交
+        form.on('submit(set_website)', function(obj){
+
+            //请求登入接口
+            $.ajax({
+                url:"/Admin/config",
+                data:obj.field,
+                type:"Post",
+                dataType:"json",
+                success:function(data){
+                    if(data.code==200){
+                        layer.msg(data.message);
+                        //location.reload();
+                    }
+
+                }
+            });
+
+        });
+
+    });
+</script>

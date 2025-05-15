@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>在线商城 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+    <style>
+        .pagination>li {
+            display: inline;
+        }
+        li {
+            list-style: none;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>li:first-child>a, .pagination>li:first-child>span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="alert alert-primary" role="alert">
+        购买商品成功后需小退到频道列表然后在打开仓库即可看到！
+    </div>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand">共有{$count}件商品</a>
+        <form action="/shop" method="get" class="form-inline my-2 my-lg-0">
+            <input type="text" name="keyword" value="" class="form-control mr-sm-2" placeholder="搜索商品...">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+    </nav>
+
+
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="row">
+                {foreach $list as $item}
+                <div class="col-md-4">
+                    <div class="card mb-5 shadow-sm">
+                        <img class="bd-placeholder-img card-img-top" height="225" src="{$item.pic}?imageMogr2/thumbnail/500x" alt="cover">
+                        <div class="card-body">
+                            <p class="card-text d-flex justify-content-between">
+                                {$item.name}
+                                <span class="text-danger">{if $item.type == 'cf'}CF点：{else}GP点：{/if}{$item.price}</span>
+                            </p>
+                            <button class="btn btn-primary" onclick="BuyAjax('{$item.id}')">购买</button>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+            <nav>
+                <div class="pagination small justify-content-center mt-5">
+                    {$list|raw}
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+<script>
+    $('.card').mouseenter(function () {
+        $(this).addClass('shadow');
+    });
+
+    $('.card').mouseleave(function () {
+        $(this).removeClass('shadow');
+    });
+</script>
+<script src=/static/layui/layui.js"></script>
+</body>
+</html>

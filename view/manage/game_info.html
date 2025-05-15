@@ -1,0 +1,71 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">对局信息</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="type">
+                            <option value="USN">用户ID</option>
+                            <option value="GAME_LOG_SRL">编号</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn btn-item" lay-submit lay-filter="item-front-search"><i class="layui-icon layui-icon-search button-btn"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfGameInfo_Table" lay-filter="CfGameInfo_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfGameInfo_Table',
+            url: '/Admin/GameInfoList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'ID', title: 'ID', align: 'center'},
+                {field: 'GAME_LOG_SRL', title: '游戏编号', align: 'center', sort: true},
+                {field: 'USN', title: '用户ID', align: 'center', sort: true},
+                {field: 'NICK', title: '角色名', align: 'center', sort: true},
+                {field: 'START_DATE', title: '开始时间'},
+                {field: 'IP', title: '用户IP', align: 'center', sort: true},
+                {field: 'TEAM', title: '模式', align: 'center', sort: true},
+                {field: 'CHAR_ITEM_ID', title: '角色代码', align: 'center', sort: true},
+                {field: 'KILL', title: '杀敌', align: 'center', sort: true},
+                {field: 'DEATH', title: '死亡', align: 'center', sort: true},
+                {field: 'EXP', title: '经验', align: 'center', sort: true},
+                {field: 'GAME_POINT_AFT', title: '累计金币', align: 'center'},
+                {field: 'EXP_AFT', title: '累计经验', align: 'center'},
+                {field: 'REG_DATE', title: '结束时间', align: 'center'}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        //监听搜索
+        form.on('submit(item-front-search)', function(data){
+            table.reload('CfGameInfo_Table', {
+                where: data.field
+            });
+            return false;
+        });
+    });
+</script>

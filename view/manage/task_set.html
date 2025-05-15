@@ -1,0 +1,192 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">每日任务说明</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane">
+                <b style="color:#f00">修改后需要重启服务才会生效，不懂的别乱改否则会出错</b>
+                <br>
+                任务类型：D（每日任务）、W（每周任务）<br>
+                目标类型：7（GP）、6（经验）<br>
+                目标值：数量<br>
+                状态：Y（启用）、N（关闭）<br>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">每日任务设置</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfTaskTable" lay-filter="CfTaskTable"></table>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">每日任务礼包说明</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane">
+                <b style="color:#f00">修改后需要重启服务才会生效，不懂的别乱改否则会出错</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">每日任务礼包</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfMissTable" lay-filter="CfMissTable"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        table = layui.table
+        table.render({
+            elem: '#CfTaskTable',
+            url: '/Admin/AjaxTaskList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                //MISSION_TYPE	MISSION_STEP	GROUP_TYPE	ROUND_TYPE	MAP_NO	TARGET_TYPE	TARGET_VALUE	USE_YN	DESCRIPTION
+                {field: 'MISSION_TYPE', title: '任务类型', align: 'center', sort: true,edit: 'text'},
+                {field: 'GROUP_TYPE', title: '类型1', align: 'center', sort: true,edit: 'text'},
+                {field: 'ROUND_TYPE', title: '类型2', align: 'center', sort: true,edit: 'text'},
+                {field: 'TARGET_TYPE', title: '目标类型', align: 'center', sort: true,edit: 'text'},
+                {field: 'TARGET_VALUE', title: '目标值', align: 'center', sort: true,edit: 'text'},
+                {field: 'USE_YN', title: '状态', align: 'center', sort: true,edit: 'text'},
+                {field: 'DESCRIPTION', title: '任务描述', align: 'center', sort: true,edit: 'text'},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+        table.render({
+            elem: '#CfMissTable',
+            url: '/Admin/AjaxMissList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                //MISSION_TYPE	MISSION_STEP	GROUP_TYPE	ROUND_TYPE	MAP_NO	TARGET_TYPE	TARGET_VALUE	USE_YN	DESCRIPTION
+                {field: 'REWARD_SRL', title: 'ID', align: 'center', sort: true},
+                {field: 'BOX_INDEX', title: 'box指数', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_TYPE1', title: '奖励类型1', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_TYPE2', title: '奖励类型2', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_TYPE3', title: '奖励类型3', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_TYPE4', title: '奖励类型4', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_VALUE1', title: '物品代码1', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_VALUE2', title: '物品代码2', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_VALUE3', title: '物品代码3', align: 'center', sort: true,edit: 'text'},
+                {field: 'REWARD_VALUE4', title: '物品代码4', align: 'center', sort: true,edit: 'text'},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+        function postChangeField(SRL, field, val) {
+
+            layer.confirm('确定要修改？', {
+                icon: 3,
+                title: '修改信息'
+            }, function () {
+                layer.closeAll('dialog');
+                var index = layer.load(3);
+                $.post("/Admin/AjaxEditTask/" + SRL, {
+                    field: field,
+                    val: val,
+                }, (data) => {
+                    layer.close(index);
+                    if (data.code == 200) {
+                        layer.open({
+                            icon: 6,
+                            content: '修改成功',
+                            title: '修改成功',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        layer.open({
+                            icon: 5,
+                            content: data.msg?data.msg:'修改失败！请刷新页面后重试...',
+                            title: '修改失败',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+                })
+            });
+
+        }
+
+        function postMiss(SRL, field, val) {
+
+            layer.confirm('确定要修改？', {
+                icon: 3,
+                title: '修改信息'
+            }, function () {
+                layer.closeAll('dialog');
+                var index = layer.load(3);
+                $.post("/Admin/AjaxMissTask/" + SRL, {
+                    field: field,
+                    val: val,
+                }, (data) => {
+                    layer.close(index);
+                    if (data.code == 200) {
+                        layer.open({
+                            icon: 6,
+                            content: '修改成功',
+                            title: '修改成功',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        layer.open({
+                            icon: 5,
+                            content: data.msg?data.msg:'修改失败！请刷新页面后重试...',
+                            title: '修改失败',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+                })
+            });
+
+        }
+
+        table.on('edit(CfTaskTable)', function (obj) {
+            postChangeField(obj.data.SRL, obj.field, obj.value)
+        });
+
+        table.on('edit(CfMissTable)', function (obj) {
+            postMiss(obj.data.REWARD_SRL, obj.field, obj.value)
+        });
+    });
+</script>

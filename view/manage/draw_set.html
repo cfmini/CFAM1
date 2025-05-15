@@ -1,0 +1,195 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">扭蛋物品说明</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane">
+                <b style="color:#f00">修改后需要重启服务才会生效，不懂的别乱改否则会出错</b>
+                <br>
+                SRL字段：记录值必须是唯一的数字，不能在其他行使用，要追加新的，最后一行的数值再+1。<br>
+                GACHA_ID字段 ：记录值必须是 CF_ITEM_INFO 表中 FUNCTION5 字段中的值，此外，CF_ITEM_INFO 需要与 ITEM.CFT 同步。<br>
+                GROUP_ID 字段 ：记录值根据项目类型定义 0 = 永久项目 1 = 临时项目 2 = GP<br>
+                ITEM_ID 列：记录值为要放入箱子中的奖品的 ITEM_ID 0 = ZP 箱子 1 = GP 箱子<br>
+                WIN_RATE 列：纪录值为赢得该物品的几率，0 到 100<br>
+                在CNT栏中：记录值了要获得的物品的数量或要获得的GP的数量<br>
+                DISPLAY 列 ：表示了该箱子是否会出现在扭蛋机上，Y 表示是，N 表示否<br>
+
+                CHANCE_TYPE 列 ：为输入的所有项目输入 0<br>
+
+                RARE_TYPE 列 ：表示奖品是否稀有 1 = 稀有 2 = 正常<br>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">扭蛋物品设置</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfDrawTable" lay-filter="CfDrawTable"></table>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">扭蛋物品信息说明</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane">
+                <b style="color:#f00">不懂不要乱改</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">扭蛋物品信息</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfGROUPTable" lay-filter="CfGROUPTable"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        table = layui.table
+        table.render({
+            elem: '#CfDrawTable',
+            url: '/Admin/AjaxDrawList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                //MISSION_TYPE	MISSION_STEP	GROUP_TYPE	ROUND_TYPE	MAP_NO	TARGET_TYPE	TARGET_VALUE	USE_YN	DESCRIPTION
+                {field: 'GACHA_ID', title: 'GACHA_ID', align: 'center', sort: true,edit: 'text'},
+                {field: 'GROUP_ID', title: 'GROUP_ID', align: 'center', sort: true,edit: 'text'},
+                {field: 'ITEM_ID', title: 'ITEM_ID', align: 'center', sort: true,edit: 'text'},
+                {field: 'WIN_RATE', title: 'WIN_RATE', align: 'center', sort: true,edit: 'text'},
+                {field: 'CNT', title: 'CNT', align: 'center', sort: true,edit: 'text'},
+                {field: 'DISPLAY', title: 'DISPLAY', align: 'center', sort: true,edit: 'text'},
+                {field: 'CHANCE_TYPE', title: 'CHANCE_TYPE', align: 'center', sort: true,edit: 'text'},
+                {field: 'RARE_TYPE', title: 'RARE_TYPE', align: 'center', sort: true,edit: 'text'},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+        table.render({
+            elem: '#CfGROUPTable',
+            url: '/Admin/CfGROUPTable',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                //MISSION_TYPE	MISSION_STEP	GROUP_TYPE	ROUND_TYPE	MAP_NO	TARGET_TYPE	TARGET_VALUE	USE_YN	DESCRIPTION
+                {field: 'SRL', title: 'SRL', align: 'center', sort: true},
+                {field: 'GACHA_ID', title: 'GACHA_ID', align: 'center', sort: true,edit: 'text'},
+                {field: 'GROUP_ID', title: 'GROUP_ID', align: 'center', sort: true,edit: 'text'},
+                {field: 'WIN_RATE', title: 'WIN_RATE', align: 'center', sort: true,edit: 'text'},
+                {field: 'CASH_TYPE', title: 'CASH_TYPE', align: 'center', sort: true,edit: 'text'},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+        function postDraw(SRL, field, val) {
+
+            layer.confirm('确定要修改？', {
+                icon: 3,
+                title: '修改信息'
+            }, function () {
+                layer.closeAll('dialog');
+                var index = layer.load(3);
+                $.post("/Admin/AjaxEditDarw/" + SRL, {
+                    field: field,
+                    val: val,
+                }, (data) => {
+                    layer.close(index);
+                    if (data.code == 200) {
+                        layer.open({
+                            icon: 6,
+                            content: '修改成功',
+                            title: '修改成功',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        layer.open({
+                            icon: 5,
+                            content: data.msg?data.msg:'修改失败！请刷新页面后重试...',
+                            title: '修改失败',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+                })
+            });
+
+        }
+
+        function postGROUP(SRL, field, val) {
+
+            layer.confirm('确定要修改？', {
+                icon: 3,
+                title: '修改信息'
+            }, function () {
+                layer.closeAll('dialog');
+                var index = layer.load(3);
+                $.post("/Admin/AjaxGROUPTask/" + SRL, {
+                    field: field,
+                    val: val,
+                }, (data) => {
+                    layer.close(index);
+                    if (data.code == 200) {
+                        layer.open({
+                            icon: 6,
+                            content: '修改成功',
+                            title: '修改成功',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        layer.open({
+                            icon: 5,
+                            content: data.msg?data.msg:'修改失败！请刷新页面后重试...',
+                            title: '修改失败',
+                            btn: ['确认'],
+                            yes: function (index, layero) {
+                                location.reload();
+                            },
+                            cancel: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+                })
+            });
+
+        }
+
+        table.on('edit(CfDrawTable)', function (obj) {
+            postDraw(obj.data.SRL, obj.field, obj.value)
+        });
+
+        table.on('edit(CfGROUPTable)', function (obj) {
+            postGROUP(obj.data.SRL, obj.field, obj.value)
+        });
+    });
+</script>

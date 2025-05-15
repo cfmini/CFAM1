@@ -1,0 +1,78 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">游戏商城</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="type">
+                            <option value="USER_ID">账号</option>
+                            <option value="EMAIL">邮箱</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-useradmin" lay-submit
+                                lay-filter="user-front-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfUser_Table" lay-filter="CfUser_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfUser_Controls">
+    <a class="layui-btn layui-btn-primary layui-btn-xs data-count-pass"  lay-event="editshop">修改</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfUser_Table',
+            url: '/Admin/AjaxGameShopList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'ITEM_ID', title: 'ItemId', align: 'center'},
+                {field: 'NAME', title: '名字', align: 'center', sort: true},
+                {field: 'PRICE', title: '价格', align: 'center', sort: true},
+                {field: 'ITEM_CODE', title: 'CODE', align: 'center', sort: true},
+                {field: 'EMAIL', title: '邮箱', align: 'center', sort: true},
+                {field: 'REG_DATE', title: '注册时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfUser_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+
+        //监听搜索
+        form.on('submit(user-front-search)', function(data){
+            table.reload('CfUser_Table', {
+                where: data.field
+            });
+            return false;
+        });
+
+
+
+    });
+</script>

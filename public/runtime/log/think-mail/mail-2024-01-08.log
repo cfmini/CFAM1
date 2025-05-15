@@ -1,0 +1,2 @@
+[ 2024-01-08T21:47:42+08:00 ] 
+[ ERROR ] Failed to authenticate on SMTP server with username "986315424@qq.com" using the following authenticators: "LOGIN". Authenticator "LOGIN" returned "Expected response code "235" but got code "535", with message "535 Login Fail. Please enter your authorization code to login. More information in http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256".".

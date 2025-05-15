@@ -1,0 +1,95 @@
+<link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <form class="layui-form" action="" style="margin-top: 50px">
+        <div class="layui-form-item">
+            <label class="layui-form-label">USN</label>
+            <div class="layui-input-block">
+                <input type="text" name="USN" value="{$res.USN}" autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">游戏名</label>
+            <div class="layui-input-block">
+                <input type="text" name="NICK" value="{$res.NICK}" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">等级</label>
+            <div class="layui-input-block">
+                <input type="text" name="LEV" value="{$res.LEV}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">经验</label>
+            <div class="layui-input-block">
+                <input type="text" name="EXP" value="{$res.EXP}" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">GP</label>
+            <div class="layui-input-block">
+                <input type="text" name="GAME_POINT" value="{$res.GAME_POINT}" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">封号</label>
+                <div class="layui-input-block">
+                    <select name="HOLD_TYPE" lay-filter="position">
+                        <option value="A" {if $res['HOLD_TYPE'] == 'A'}selected = "selected"{/if}>否</option>
+                        <option value="E" {if $res['HOLD_TYPE'] == 'E'}selected = "selected"{/if}>是</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">设置GM</label>
+                <div class="layui-input-block">
+                    <select name="AUTHORITY" lay-filter="position">
+                        <option value="N" {if $res['AUTHORITY'] == 'N'}selected = "selected"{/if}>否</option>
+                        <option value="A" {if $res['AUTHORITY'] == 'A'}selected = "selected"{/if}>管理员</option>
+                        <option value="G" {if $res['AUTHORITY'] == 'G'}selected = "selected"{/if}>GM</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="submitCHA">确认修改</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+    var index = parent.layer.getFrameIndex(window.name);
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#product-expired' //指定元素
+            , type: 'datetime'
+        });
+        form.on('submit(submitCHA)', function (data) {
+            layui.$.post("/Admin/EditCfCha", data.field, (res) => {
+                if (res.code == 200) {
+                    parent.table.reload('Cfcha_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data')
+                    parent.layer.close(index)
+                }else{
+                    layer.msg(res.msg, {icon: 2});
+                }
+            })
+            return false
+        })
+    })
+</script>
+

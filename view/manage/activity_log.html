@@ -1,0 +1,71 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">活动领取记录</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfActivityLog_Table" lay-filter="CfActivityLog_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfActivityLog_Table',
+            url: '/Admin/AjaxActivityLog',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'title', title: '活动名', align: 'center', sort: true},
+                {field: 'type', title: '类型', align: 'center', sort: true},
+                {field: 'username', title: '用户名', align: 'center', sort: true},
+                {field: 'create_time', title: '领取时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        function delAll(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delActivityLogAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfActivityLog_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        table.on('toolbar(CfActivityLog_Table)', function (obj) {
+            if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部记录吗？', function () {
+                    delAll()
+                })
+            }
+        });
+    });
+</script>

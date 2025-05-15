@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>活动福利 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<style>
+    .jumbotron {
+        background-image: url('https://api.picurl.cn/redir/1802884017c92477bef3694f0d308084.jpg');
+        background-size: 1100px 196px;
+        background-position: center;
+    }
+</style>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 font-italic">福利活动</h1>
+            <p class="lead my-3">各类福利活动尽在此领取！</p>
+        </div>
+    </div>
+    <div class="alert alert-warning" role="alert">
+        部分活动领取后需要小退到游戏频道列表在进入即可看到！
+    </div>
+    <div class="row mb-2">
+        {foreach $list as $item}
+        <div class="col-md-6">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-{if $item.status == 1}{if $item.endtime == null}success{else}primary{/if}{else}danger{/if}">{if $item.status == 1}{if $item.endtime == null}正常{else}过期{/if}{else}未开启{/if}</strong>
+                    <h3 class="mb-0">{$item.title}</h3>
+                    <p class="card-text mb-auto">{$item.content}</p>
+                    <button type="button" id="{$item.id}" class="btn btn-success my-2 ajax-btn">领取</button>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img width="200" height="250"  src="{if $item.pic == null}https://api.picurl.cn/redir/33766662437064263e7e1e2a522be37d.jpg{else}{$item.pic}{/if}">
+                </div>
+            </div>
+        </div>
+        {/foreach}
+        <nav>
+            <div class="pagination small justify-content-center mt-5">
+                {$list|raw}
+            </div>
+        </nav>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

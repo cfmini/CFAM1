@@ -1,0 +1,111 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">物品大全</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane" lay-filter="front-formlist">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <select name="arg">
+                            <option value="NAME">名称</option>
+                            <option value="ITEM_ID">ITEM_ID</option>
+                            <option value="ITEM_CODE">ITEM_CODE</option>
+                            <option value="ITEM_INDEX">ITEM_INDEX</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-block">
+                            <select name="type">
+                                <option value="-1">不限</option>
+                                <option value="C">角色</option>
+                                <option value="D">装备</option>
+                                <option value="F">道具</option>
+                                <option value="S">背包</option>
+                                <option value="W">武器</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn btn-item" lay-submit lay-filter="item-front-search"><i class="layui-icon layui-icon-search button-btn"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfItem_Table" lay-filter="CfItem_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="CfItem_Controls">
+    <a class="layui-btn layui-btn layui-btn-xs data-count-upcf"  lay-event="getItem">发送物品</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfItem_Table',
+            url: '/Admin/AjaxCfItemList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'ITEM_ID', title: 'ITEM_ID', align: 'center'},
+                {field: 'NAME', title: '名称', align: 'center', sort: true},
+                {field: 'CHINA_NAME', title: '中文名', align: 'center', sort: true},
+                {field: 'ITEM_ING', width: 100, title: '图标',templet:function(d){
+                        return `<img src="${d.ITEM_ING}" width="100%" onclick="window.open('${d.ITEM_ING}')"/>`
+                    }},
+                {field: 'ITEM_CODE', title: 'ITEM_CODE', align: 'center', sort: true},
+                {field: 'ITEM_INDEX', title: 'ITEM_INDEX', align: 'center', sort: true},
+                {field: 'ITEM_TYPE', title: '类型', align: 'center', sort: true},
+                {field: 'ITEM_CATEGORY1', title: '分类1', align: 'center', sort: true},
+                {field: 'ITEM_CATEGORY2', title: '分类2', align: 'center', sort: true},
+                {field: 'SHORT_NAME', title: 'SHORT_NAME', align: 'center', sort: true},
+                {field: 'SHORT_DESCR', title: 'SHORT_DESCR', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfItem_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        //监听搜索
+        form.on('submit(item-front-search)', function(data){
+            table.reload('CfItem_Table', {
+                where: data.field
+            });
+            return false;
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('tool(CfItem_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'getItem') {
+                var index = layer.open({
+                    title: '充值',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/SendItem?id=' + data.ITEM_ID,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            }
+        });
+    });
+</script>

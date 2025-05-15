@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>{$configs.website} - {$configs.sub}</title>
+    {include file="/default/common/header" /}
+    <style>
+        .page-header {
+            padding-bottom: 9px;
+            margin: 40px 0 20px;
+            border-bottom: 1px solid #eee;
+        }
+        span.class_hr {
+            width:3px;
+            height:20px;
+            background-color:#4680ff;
+            position:absolute
+        }
+        .badge-light-primary {
+            background:rgba(70,128,255,.2);
+            border-color:#cbdbff;
+            color:#4680ff
+        }
+        .badge-light-warning {
+            background:rgba(255,186,87,.2);
+            color:#ff9600
+        }
+    </style>
+
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+
+
+    <div class="card">
+        <img src="https://api.picurl.cn/redir/8c8281d323b83e2349089ea853d7f3ce.jpg">
+<!--        <div class="card-header p-3">-->
+<!--            <span class="class_hr"></span>-->
+<!--            <h5 class="ml-3">游玩必看</h5>-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <p class="lead my-3 d-flex p-2 bd-highlight">关于外挂问题：房间禁止开挂骚扰玩家，发现举报给GM进行封号！<br>最后强调一遍，开G的自觉去频道10或者没人的频道，否则发现直接封无解！！！</p>-->
+<!--            <p class="lead my-3 d-flex p-2 bd-highlight">游戏完全公益，定期关闭注册，如果无法注册就请耐心等待，这也是为了清理外挂请谅解。</p>-->
+<!--        </div>-->
+    </div>
+    <div class="alert alert-success" role="alert">
+        {$configs.website} {$configs.downdes}
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <span class="badge badge-light-primary float-right" style="line-height: 1.5;margin-top: -2px;">{$configs.verone}</span>
+                    <h5 class="card-title">{$configs.downname}</h5>
+                    <p class="card-text">{$configs.downdate}</p>
+                    <a href="{$configs.downurl}" class="btn btn-success">点我下载</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <span class="badge badge-light-warning float-right" style="line-height: 1.5;margin-top: -2px;">{$configs.veronet}</span>
+                    <h5 class="card-title">{$configs.downnamea}</h5>
+                    <p class="card-text">{$configs.downdatea}</p>
+                    <a href="{$configs.downurla}" class="btn btn-primary">点我下载</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="cards">-->
+<!--        <div class="my-3 p-3 bg-white rounded shadow-sm">-->
+<!--            <h6 class="border-bottom border-gray pb-2 mb-0">更新文件</h6>-->
+<!--            <div class="media text-muted pt-3">-->
+<!--                <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>-->
+<!--    -->
+<!--                <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">-->
+<!--                    <div class="d-flex justify-content-between align-items-center w-100">-->
+<!--                        <strong class="text-gray-dark">v1.4.1 更新文件</strong>-->
+<!--                        <a href="https://www.123pan.com/s/V4vKVv-SSRcv.html">点击下载</a>-->
+<!--                    </div>-->
+<!--                    <span class="d-block">下载完后解压替换到客户端版本为V1.4.0游戏根目录即可</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--    -->
+<!--            <small class="d-block text-right mt-3">-->
+<!--                <a href="#">全部更新</a>-->
+<!--            </small>-->
+<!--        </div>-->
+<!--    </div>-->
+    {if $news != null}
+    <div class="bs-docs-section">
+        <div class="card">
+            <div class="card-header">
+                {$news.title}
+                <span class="badge badge-light-primary float-right" style="line-height: 1.5;margin-top: -2px;"><a href="/article/{$news.id}.html">点击查看</a></span>
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p class="m-0 text-secondary" style="font-size: 13px;">{$news.content|strip_tags}</p>
+                    <hr>
+                    <footer class="blockquote-footer"> <cite title="Source Title" style="font-size: 9px;">{$news.create_time}</cite></footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    {/if}
+    <div class="card">
+        <div class="card mb-0">
+
+            <ul class="nav nav-pills m-3" id="myTab" role="tablist">
+                <!-- <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="gf-tab" data-toggle="tab" data-target="#cf" type="button" role="tab" aria-controls="cf" aria-selected="true">CF点榜</a>
+                </li> -->
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="gp-tab" data-toggle="tab" data-target="#gp" type="button" role="tab" aria-controls="gp" aria-selected="true">GP榜</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="exp-tab" data-toggle="tab" data-target="#exp" type="button" role="tab" aria-controls="exp" aria-selected="false">经验榜</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="ban-tab" data-toggle="tab" data-target="#ban" type="button" role="tab" aria-controls="ban" aria-selected="false">封神榜</a>
+                </li>
+
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- <div class="tab-pane fade active show" id="cf" role="tabpanel" aria-labelledby="cf-tab">
+                    <div class="table-responsive">
+                        <table class="table table-hover nowrap small table-sm">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>用户</th>
+                                <th>等级</th>
+                                <th>CF点</th>
+                                <th>最近游戏</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name='cf' id='item'}
+                            <tr>
+                                <th scope="row">{$i}</th>
+                                <td>{$item.NICK}</td>
+                                <td><img src="/static/images/dj/BigClass_{$item.LEV}.jpg" width="16" height="16" alt="rank"></td>
+                                <td>{$item.CF}</td>
+                                <td>{$item.LAST_PLAY_DATE}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div> -->
+                <div class="tab-pane fade active show" id="gp" role="tabpanel" aria-labelledby="gp-tab">
+                    <div class="table-responsive">
+                        <table class="table table-hover nowrap small table-sm">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>用户</th>
+                                <th>等级</th>
+                                <th>GP</th>
+                                <th>最近游戏</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name='list' id='item'}
+                            <tr>
+                                <th scope="row">{$i}</th>
+                                <td>{$item.NICK}</td>
+                                <td><img src="/static/images/dj/BigClass_{$item.LEV}.jpg" width="16" height="16" alt="rank"></td>
+                                <td>{$item.GAME_POINT}</td>
+                                <td>{$item.LAST_PLAY_DATE}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+                <div class="tab-pane fade" id="exp" role="tabpanel" aria-labelledby="exp-tab">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover nowrap small table-sm">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>用户</th>
+                                <th>等级</th>
+                                <th>经验</th>
+                                <th>最近游戏</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name='exp' id='item'}
+                            <tr>
+                                <th scope="row">{$i}</th>
+                                <td>{$item.NICK}</td>
+                                <td><img src="/static/images/dj/BigClass_{$item.LEV}.jpg" width="16" height="16" alt="rank"></td>
+                                <td>{$item.EXP}</td>
+                                <td>{$item.LAST_PLAY_DATE}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="ban" role="tabpanel" aria-labelledby="ban-tab">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover nowrap small table-sm">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>角色名</th>
+                                <th>封号时长</th>
+                                <th>创建时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name='ban' id='item'}
+                            <tr>
+                                <th scope="row">{$i}</th>
+                                <td>{$item.MEMO}</td>
+                                <td>{if $item.BLOCK_MIN == '0'}永久{else}{:date('Y-m-d H:i:s', $item.BLOCK_MIN)}{/if}</td>
+                                <td>{$item.BLOCK_END_DATE}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="alert alert-primary" role="alert">
+        <h4>交流群：{$configs.qqqun}</h4>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+</body>
+</html>

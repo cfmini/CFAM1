@@ -1,0 +1,189 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">商品管理</div>
+        <div class="layui-card-body">
+            <div class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Key" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-useradmin" lay-submit
+                                lay-filter="user-front-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="delChe"><i class="layui-icon">&#xe654;</i>删除选中</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="deleteAll"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="Products_Table" lay-filter="Products_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script type="text/html" id="Products_Controls">
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="editProducts">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="delProducts">删除</a>
+</script>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+
+        table = layui.table
+        table.render({
+            elem: '#Products_Table',
+            url: '/Admin/AjaxProductsList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', title: 'id', align: 'center'},
+                {field: 'name', title: '商品名称', align: 'center'},
+                {field: 'item_id', title: 'Item_ID', align: 'center'},
+                {field: 'price', title: '商品价格', align: 'center', sort: true},
+                {field: 'type', title: '货币类型', align: 'center', sort: true},
+                {field: 'status', title: '状态', templet:function (d) {
+                        if (d.status==1){
+                            return '上架'
+
+                        }else{
+                            return '下架'
+                        }
+                    }
+                },
+                {field: 'create_time', title: '创建时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#Products_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        function delProducts(ids) {
+            $.post('/Admin/delProducts', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('Products_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+
+        function delChe(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delChe?id=' + ids.join("."),
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('Products_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        function deleteAll() {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/deleteAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('Products_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        //监听搜索
+        form.on('submit(user-front-search)', function(data){
+            table.reload('Products_Table', {
+                where: data.field
+            });
+            return false;
+        });
+
+
+
+
+        table.on('toolbar(Products_Table)', function (obj) {
+            if (obj.event === 'delChe') {
+                layer.confirm('确定要删除选中的资源吗？', function () {
+                    var checkStatus = table.checkStatus('Products_Table')
+                        , data = checkStatus.data;
+                    const ids = []
+                    for (const dataKey in data) {
+                        ids.push(data[dataKey].id)
+                    }
+                    delChe(ids)
+                })
+            } else if (obj.event === 'deleteAll') {  // 监听删除操作
+                layer.confirm('确定要删除选全部商品？', function () {
+                    deleteAll()
+                })
+            }
+        });
+
+        table.on('tool(Products_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'editProducts') {
+                var index = layer.open({
+                    title: '修改',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/editProducts?id=' + data.id,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delProducts') {
+                layer.confirm('确定删除该商品吗？', function (index) {
+                    delProducts([data.id])
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>

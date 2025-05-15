@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="all" name="robots">
+    <meta content="Tencent-CP" name="author"/>
+    <meta content="Tencent" name="Copyright"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/a20240506.css"/>
+    <title>{$configs.website} - {$configs.sub} - 活动抽奖</title>
+</head>
+
+<style>
+    .area-name2 {
+        font-size: 12px;
+        line-height: 28px;
+        text-indent: 4px;
+    }
+
+    .con {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99999;
+    }
+
+    #msg {
+        position: fixed;
+        top: 35%;
+        left: 40%;
+    }
+
+    .info_message {
+        color: #000;
+        background: rgb(255, 255, 255);
+        height: 230px;
+        display: inline-block;
+        width: 350px;
+        border-radius: 15px;
+    }
+
+    #alertSure {
+        position: absolute;
+        bottom: 5%;
+        right: 5%;
+        width: 60px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        background: #2e9cce;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .detail_message {
+        width: 325px;
+        height: 225px;
+        overflow: hidden;
+        display: inline-block;
+        padding: 10px;
+        font-size: 18px;
+        text-align: center;
+        color: #000000;
+    }
+
+    .message-button {
+        display: inline-block;
+        text-align: right;
+        float: right;
+    }
+
+    #alertSure:hover,
+    #alertCancel:hover {
+        background: rgba(118, 206, 247, 0.88);
+    }
+
+    .alertTitle {
+        padding: 0 80px 0 20px;
+        height: 40px;
+        line-height: 40px;
+        border-bottom: 1px solid #F0F0F0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000000;
+        overflow: hidden;
+        border-radius: 2px 2px 0 0;
+    }
+
+    .closeAlert {
+        position: relative;
+        display: inline-block;
+        height: 20px;
+        font-weight: normal;
+        cursor: pointer;
+        color: initial;
+        /*取消继承父元素的颜色属性*/
+        font-weight: normal;
+    }
+
+    .closeAlert::before,
+    .closeAlert::after {
+        color: initial;
+        /*取消继承父元素的颜色属性*/
+        font-weight: normal;
+        position: absolute;
+        content: '';
+        width: 2px;
+        height: 16px;
+        background-color: rgb(162, 162, 164);
+        top: 8px;
+        left: 268px;
+        transform: rotate(45deg);
+    }
+
+    .closeAlert::after {
+        transform: rotate(-45deg);
+    }
+
+    .closeAlert:hover::before,
+    .closeAlert:hover::after {
+        background-color: #000 !important;
+    }
+
+</style>
+
+
+<body style="padding-top: 42px;">
+
+<div class="g-wrap cf">
+    <div class="logo-wrap">
+    </div>
+    <div class="header-box">
+    </div>
+</div>
+</div>
+<div class="wrap1">
+    <div class="container">
+        <div class="box3">
+            <h2 class="tit3 sp db">主奖池</h2>
+            <div class="bxbtns0110">
+                <!--添加类名on数字变为X-->
+                <a href="javascript:Hx.buy('663229');" class="" onclick="PTTSendClick('btn','btn12a1','按钮');">
+							<span class="textbtn1">我的剩余CF点：<span id='cf2'>X</span></span>
+
+                </a>
+            </div>
+
+        </div>
+        <div class="boxlottery">
+            <ul class="listlot">
+                {foreach $res as $item}
+                <li>
+                    <img src="{$item.pic}" alt=""/>
+                    <p class="djname">{$item.name}</p>
+                </li>
+                {/foreach}
+            </ul>
+            <a href="javascript:Hx.pop1();" class="btndjqjl" onclick="PTTSendClick('btn','btn16','按钮');"></a>
+            <p class="lottxt2">抽奖消耗CF<span id='cf1'>X</span>CF点
+            <div class="btnlottwo">
+                <a href="javascript:send('order=1');" class="btnlot1 sp db" onclick="PTTSendClick('btn','btn17','按钮');">抽一次</a>
+                <a href="javascript:alert('暂未开放，请使用单独抽奖');" class="btnlot2 sp db"
+                   onclick="PTTSendClick('btn','btn18','按钮');">暂未开放</a>
+            </div>
+            <!-- 暂存箱 -->
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+</div>
+<a href="javascript:closeDialog();" class="dia-close" title="关闭"></a>
+</div>
+<script id="milo-broadcast-tpl" type="text/html">
+    {@ for(var i = 0; i
+    < data.length; i++) { @}
+    <li>
+        <p>
+            <span>恭喜玩家{{data[i].iUin ? data[i].iUin :'xxxx'}}获得了 {{data[i].sPackageName ? data[i].sPackageName : ''}}</span>
+        </p>
+    </li>
+    {@ } @}
+</script>
+
+<script>
+    send('order=csh');
+    function send(data) {
+        if(data != 'order=csh'){
+            lodding("请求数据中...")
+        }
+        const url = '/Ajax/startcj'; // 你想要发送POST请求的URL
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: data,
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.code);
+                if (data.code == 500) {
+                    alert(data.msg);
+                    window.location.href = "/login";
+                    document.getElementById("cf1").innerHTML = 'X';
+                    document.getElementById("cf2").innerHTML = 'X';
+                } else if(data.code == 201) {
+                    document.getElementById("cf1").innerHTML = {$configs.ds};
+                    document.getElementById("cf2").innerHTML = data.cfmoney;
+                } else {
+                    alert(data.msg);
+                    document.getElementById("cf1").innerHTML = {$configs.ds};
+                    document.getElementById("cf2").innerHTML = data.cfmoney;
+                }
+
+            })
+            .catch(error => {
+                // 处理错误
+                alert(error);
+            });
+    }
+
+    function alert(e) {
+        // $("body").append("<div id='msg'><span>"+e+"</span></div>");
+        var html = "";
+        html += "<div class='con'><div id='msg'>";
+        html += "<div class='info_message'>";
+        html += "<div class='alertTitle'>提示<span class='closeAlert'></span></div>";
+        html += "<span class='detail_message'>" + e + "</span>";
+        html += "</div><div id='alertSure'>确定</div></div></div>";
+        $('body').append(html);
+        clearmsg();
+    }
+    function lodding(e) {
+        // $("body").append("<div id='msg'><span>"+e+"</span></div>");
+        var html = "";
+        html += "<div class='con'><div id='msg'>";
+        html += "<div class='info_message'>";
+        html += "<div class='alertTitle'>加载中...</span></div>";
+        html += "<span class='detail_message'>" + e + "</span>";
+        $('body').append(html);
+    }
+    function clearmsg() {
+        $('#alertSure').click(function() {
+            $("#msg").remove();
+            $('.con').remove();
+        })
+        $('.closeAlert').click(function() {
+            $("#msg").remove();
+            $('.con').remove();
+        })
+    };
+    function getcookie(objname) { //获取指定名称的cookie的值
+        var arrstr = document.cookie.split("; ");
+        for (var i = 0; i < arrstr.length; i++) {
+            var temp = arrstr[i].split("=");
+            if (temp[0] == objname) return unescape(temp[1]);
+        }
+    }
+</script>
+<script src="https://ossweb-img.qq.com/images/js/jquery/jquery-1.9.1.min.js"></script>
+</div>
+</body>
+
+</html>

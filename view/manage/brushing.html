@@ -1,0 +1,100 @@
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">一建刷取物品</div>
+                <div class="layui-card-body">
+                    <div class="layui-form layui-form-pane">
+                        <blockquote class="layui-elem-quote layui-quote-nm"><b style="color:#f00">只能刷取数据库已有的物品！浏览数据库物品大全<a href="/manage#/CfItem">点我进入</a></b></blockquote>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入正确的用户账号" value=""
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">物品ID</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="itemID" lay-verify="required" placeholder="物品ID即为ITEM_ID" value=""
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">数量</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="num" lay-verify="required" placeholder="不可小于0，某些物品只能刷1个"  value=""
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="verifyButton">立即刷取
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header">发送记录</div>
+                        <div class="layui-card-body">
+                            <table class="layui-hide" id="CfItemsend_Table" lay-filter="CfItemsend_Table"></table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'table'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        var laydate = layui.laydate;
+        table = layui.table
+
+
+        table.render({
+            elem: '#CfItemsend_Table',
+            url: '/Admin/AjaxSendItemLog',
+            toolbar: '#SenTool',
+            cols: [[
+                {field: 'USN', title: 'USN', align: 'center'},
+                {field: 'NICK', title: '游戏名', align: 'center', sort: true},
+                {field: 'GIVEN', title: '物品ID', align: 'center', sort: true},
+                {field: 'ITEM_NAME', title: '物品名称', align: 'center', sort: true},
+                {field: 'SHORT_NAME', title: 'SHORT_NAME', align: 'center', sort: true},
+                {field: 'CHINA_NAME', title: '中文名称', align: 'center', sort: true},
+                {field: 'ITEM_ING', width: 100, title: '缩略图',templet:function(d){
+                        return `<img src="${d.ITEM_ING}" width="100%" onclick="window.open('${d.ITEM_ING}')"/>`
+                    }},
+                {field: 'REG_DATE', title: '发送时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        form.on('submit(verifyButton)', function (data) {
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            layui.$.post("/Admin/Brushing", data.field, (res) => {
+                if (res.code == 200) {
+                    parent.table.reload('CfItemsend_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data')
+                    layer.msg(res.msg, {icon: 1});
+                }else{
+                    layer.msg(res.msg, {icon: 2});
+                }
+                layer.close(index);
+            })
+            return false
+        })
+    })
+</script>

@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <form class="layui-form" action="" style="margin-top: 50px">
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">ITEM ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="itemid" value="" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数量</label>
+            <div class="layui-input-block">
+                <input type="number" name="number" value="" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="submitcdk">确认添加</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+    var index = parent.layer.getFrameIndex(window.name);
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#product-expired' //指定元素
+            , type: 'datetime'
+        });
+        form.on('submit(submitcdk)', function (data) {
+            layui.$.post("/Admin/AddCdk", data.field, (res) => {
+                if (res.code == 200) {
+                    parent.table.reload('Cfcdk_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data')
+                    parent.layer.close(index)
+                    window.open('/manage/showNewCdkey/' + res.key)
+                }else{
+                    layer.msg(res.msg, {icon: 2});
+                }
+            })
+            return false
+        })
+    })
+</script>
+

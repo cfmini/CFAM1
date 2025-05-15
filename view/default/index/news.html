@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>新闻公告 - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    {foreach $list as $item}
+    <div class="card text-left mb-3">
+        <div class="card-body">
+            <h5 class="card-title article-title article-url">
+                <a href="/article/{$item.id}.html">{$item.title}</a>
+            </h5>
+            <div class="card-text text-muted" style="display:inline-block;">
+                {$item.content|strip_tags}</span>
+            </div>
+            <div class="mt-3"><span class="float-left">
+                            <a class="badge badge-primary">{if $item.sid == 1}网站公告{else}新闻资讯{/if}</a></span>
+                <span class="text-muted small float-right"><time>{$item.create_time}</time></span>
+            </div>
+        </div>
+    </div>
+    {/foreach}
+    <div class="text-center my-4">
+        {$list|raw}
+    </div>
+</div>
+{include file="/default/common/footer" /}
+
+<script src="/static/layui/layui.js"></script>
+</body>
+</html>

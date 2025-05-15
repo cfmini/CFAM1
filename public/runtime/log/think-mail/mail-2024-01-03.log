@@ -1,0 +1,6 @@
+[ 2024-01-03T19:39:40+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".
+[ 2024-01-03T19:44:01+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".
+[ 2024-01-03T19:46:04+08:00 ] 
+[ ERROR ] Expected response code "250" but got code "501", with message "501 Mail from address must be same as authorization user.".

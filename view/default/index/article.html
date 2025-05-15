@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>{$res.title} - {$configs.website} - {$configs.sub}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    {include file="/default/common/header" /}
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="card ">
+        <div class="card-header">
+            <h5 class="mb-3" style="font-size:22px;">{$res.title}</h5>
+            <div class="text-muted">
+                <time>{$res.create_time}</time>
+                <span class="ml-2 mr-2">•</span>{if $res.sid == 1}网站公告{else}新闻资讯{/if}
+            </div>
+
+        </div>
+        <div class="card-body article_content">
+            {$res.content|raw}
+        </div>
+    </div>
+</div>
+{include file="/default/common/footer" /}
+
+<script src="/static/layui//layui.js"></script>
+</body>
+</html>

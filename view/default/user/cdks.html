@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=renderer content=webkit>
+    <meta name="robots" content="index,follow"/>
+    <meta name="description" content="CFAM"/>
+    <meta name="author" content="CFAM"/>
+    <title>Cdk兑换 - {$configs.website} - 垃圾游戏操你麻痹带你飞</title>
+    {include file="/default/common/header" /}
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <style>
+        .pagination>li {
+            display: inline;
+        }
+        li {
+            list-style: none;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>li:first-child>a, .pagination>li:first-child>span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+{include file="/default/common/nav" /}
+<div class="container">
+    <div class="row">
+        {include file="/default/user/nav" /}
+        <div class="col-lg-9">
+            <div class="card card-outline-secondary mb-2">
+                <div class="card-header">Cdk兑换</div>
+                <div class="row card-body">
+                    <div class="mx-3 alert alert-warning w-100 mb-5">
+                        <b>Cdk获得与使用</b>
+                        <br>
+                        1.Cdk获得仅能通过管理员发放，其他渠道无法获得。<br>
+                        2.每个Cdk只能使用一次，当如果你拥有Cdk的时候请尽快使用以免被其他人抢先使用。<br>
+                        3.成功兑换Cdk后重新进入游戏打开仓库即可看到，如果在游戏中可大退到频道在进入频道即可。<br>
+                    </div>
+
+                    <div class="input-group mx-3 mb-5">
+                        <input type="text" class="form-control" name="cdk" value="" placeholder="请输入cdk">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="cdk()">兑换</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card card-outline-secondary mb-2">
+                <div class="card-header">兑换记录</div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">物品名称</th>
+                            <th scope="col">兑换码</th>
+                            <th scope="col">兑换时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $list as $item}
+                        <tr>
+                            <th scope="row">{$item.name}</th>
+                            <td>{$item.cdk}</td>
+                            <td>{$item.create_time}</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <nav>
+                        {$list|raw}
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function cdk(id) {
+        var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+        var cdkValue = document.querySelector('input[name="cdk"]').value;
+        $.ajax({
+            url: "/user/AjaxCdk",
+            type: "POST",
+            data: { cdk: cdkValue },
+            success: function(data) {
+                if (data.code === 200) {
+                    layer.msg(data.msg, {icon: 1});
+                    setTimeout(function() {
+                        location.reload(); // 延迟2秒后刷新页面
+                    }, 2000);
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+                layer.close(load_show);
+            },
+            error: function(xhr, status, error) {
+                layer.close(load_show);
+            }
+        });
+    }
+</script>
+{include file="/default/common/footer" /}
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+</body>
+</html>

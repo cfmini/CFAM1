@@ -1,0 +1,116 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">管理员管理</div>
+        <div class="layui-card-body">
+            {if $userinfo['rank'] ==1}
+            <script type="text/html" id="Admintoolbar">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm layui-btn-sm data-add-btn" lay-event="addAdmin"><i class="layui-icon">&#xe654;</i>添加账号</button>
+                </div>
+            </script>
+            {/if}
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfAdmin_Table" lay-filter="CfAdmin_Table"></table>
+        </div>
+    </div>
+</div>
+{if $userinfo['rank'] ==1}
+<!-- 表格操作列 -->
+<script type="text/html" id="CfAdmin_Controls">
+    <a class="layui-btn layui-btn layui-btn-xs data-count-edit" lay-event="editAdmin">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs data-count-del" lay-event="delAdmin">删除</a>
+</script>
+{/if}
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        table = layui.table
+        table.render({
+            elem: '#CfAdmin_Table',
+            url: '/Admin/AdminList',
+            toolbar: '#Admintoolbar',
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'username', title: '用户名', align: 'center', sort: true},
+                {field: 'rank', title: '用户组', align: 'center', sort: true},
+                {field: 'status', title: '状态', align: 'center', sort: true},
+                {field: 'create_time', title: '创建时间', align: 'center', sort: true},
+                {if $userinfo['rank'] ==1}{title: '操作', toolbar: '#CfAdmin_Controls', align: 'center', width: 200}{/if}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        {if $userinfo['rank'] ==1}
+        table.on('toolbar(CfAdmin_Table)', function (obj) {
+            if (obj.event === 'addAdmin') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加管理员',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/AddAdmin',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            }
+        });
+
+        table.on('tool(CfAdmin_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'editAdmin') {
+                var index = layer.open({
+                    title: '修改账号',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['40%', '60%'],
+                    content: '/manage/editAdmin?id=' + data.id,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delAdmin') {
+                layer.confirm('确定删除该用户吗？', function (index) {
+                    delAdmin([data.id])
+                    layer.close(index);
+                });
+            }
+        });
+
+        function delAdmin(ids) {
+            $.post('/Admin/delAdmin', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfAdmin_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        {/if}
+
+
+    });
+</script>

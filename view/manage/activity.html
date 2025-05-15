@@ -1,0 +1,117 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">活动列表</div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-href="/AddActivity">添加活动</a>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除所有 </button>
+                </div>
+            </script>
+            <!-- 数据表格 -->
+            <script type="text/html" id="CfActivity_Controls">
+                <a class="layui-btn layui-btn-primary layui-btn-xs data-count-editAct"  lay-event="editAct">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs data-count-delAct"  lay-event="delAct">删除</a>
+            </script>
+            <table class="layui-hide" id="CfActivity_Table" lay-filter="CfActivity_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfActivity_Table',
+            url: '/Admin/AjaxActivityList',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'title', title: '活动名', align: 'center', sort: true},
+                {field: 'type', title: '类型', align: 'center', sort: true},
+                {field: 'status', title: '状态', align: 'center', sort: true},
+                {field: 'create_time', title: '添加时间', align: 'center', sort: true},
+                {title: '操作', toolbar: '#CfActivity_Controls', align: 'center', width: 200}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+        /**
+         * toolbar监听事件
+         */
+        function delAll(ids) {
+            $.ajax({
+                type: 'delete',
+                url: '/Admin/delActivityAll',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        table.reload('CfActivity_Table', {
+                            page: {
+                                curr: 1
+                            }
+                            , where: {}
+                        }, 'data');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+            });
+        }
+
+        table.on('toolbar(CfActivity_Table)', function (obj) {
+            if (obj.event === 'delete') {  // 监听删除操作
+                layer.confirm('确定要删除全部记录吗？', function () {
+                    delAll()
+                })
+            }
+        });
+
+        table.on('tool(CfActivity_Table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'editAct') {
+                var id = data.id;
+                // 构建跳转链接
+                var url = "/manage#/editAct/" + id;
+
+                // 跳转到编辑页面
+                window.location.href = url;
+
+                return false;
+            } else if (obj.event === 'delAct') {
+                layer.confirm('确定删除该活动吗？', function (index) {
+                    delAct([data.id])
+                    layer.close(index);
+                });
+            }
+        });
+
+
+
+        function delAct(ids) {
+            $.post('/Admin/delAct', {
+                id: ids.join("."),
+            }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, {icon: 1});
+                    table.reload('CfActivity_Table', {
+                        page: {
+                            curr: 1
+                        }
+                        , where: {}
+                    }, 'data');
+                } else {
+                    layer.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+
+    });
+</script>

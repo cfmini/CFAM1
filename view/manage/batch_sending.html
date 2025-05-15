@@ -1,0 +1,321 @@
+<link rel="stylesheet" href="/static/css/global.css" media="all">
+<div class="layui-fluid">
+    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">物品批量发送</div>
+            <div class="layui-card-body">
+                <div class="layui-form layui-form-pane">
+                    物品批量发送功能用于给指定用户批量发送物品：<a href="javascript:;" lay-href="CfItem">物品大全</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-form layui-form-pane">
+                <div class="larry-personal layui-collapse">
+                    <div class="layui-tab layui-tab-card" style="margin: 0;border-width: 0;">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">新增物品</li>
+                            <li>发送物品</li>
+                            <li>全服充值</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-form-item">
+                                    <blockquote class="layui-elem-quote">
+                                        物品代码必正确，否则可能会导致游戏无法进入等情况
+                                    </blockquote>
+                                    <label class="layui-form-label">物品ID</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="item_id" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">物品名称</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="name" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="PostItem">新增物品</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div class="layui-form-item">
+                                    <blockquote class="layui-elem-quote">
+                                        如果没有创建角色可能会导致发送失败
+                                    </blockquote>
+                                    <label class="layui-form-label">邮箱</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="email" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="PostSendItem">发送物品</button>
+<!--                                        <button class="layui-btn layui-btn-danger layui-btn-sm" lay-submit lay-filter="PostSendItemAll">发送物品</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">充值类型</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="type" value="C" title="CF点" checked>
+                                            <input type="radio" name="type" value="G" title="GP">
+                                            <input type="radio" name="type" value="E" title="经验">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">充值金额
+                                        <font color="red">*</font>
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="num" id="num" autocomplete="off" placeholder="充值金额" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-submit="" lay-filter="UpAll">立即充值</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="larry-personal layui-collapse">
+                <div class="layui-colla-item">
+                    <div class="layui-card-header">物品列表</div>
+                    <div class="block__list_words">
+                        <ul>
+                            {foreach $res as $item}
+                            <li>{$item.itemid} | {$item.name}
+                                <div style="float:right">
+                                <a class="layui-btn layui-btn-danger layui-btn-xs"
+                                   onclick="delSendP(this,'{$item.id}')" href="javascript:"><i
+                                        class="layui-icon layui-icon-delete"></i>删除</a>
+                            </div>
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">发送记录</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="CfSendIng_Table" lay-filter="CfSendIng_Table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form',  'table'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,router = layui.router()
+        table = layui.table
+
+        form.render();
+
+        table.render({
+            elem: '#CfSendIng_Table',
+            url: '/Admin/AjaxSendLogList',
+            toolbar: '#SenTool',
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center'},
+                {field: 'email', title: '内容', align: 'center', sort: true},
+                {field: 'status', title: '状态',templet:function(d){
+                        if (d.status == 1){
+                            return '处理完成'
+                        } else{
+                            return '处理中'
+                        }
+                    }},
+                {field: 'create_time', title: '发送时间', align: 'center', sort: true},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+        //提交
+        form.on('submit(PostItem)', function (data) {
+            var item_id = $("#item_id").val();
+            var name= $("#name").val();
+            if (item_id == '' && name == '') {
+                layer.msg('物品ID与物品名称不能为空', { icon: 2 });
+            }else{
+                layer.confirm('物品ID：' + item_id + '</br>物品名称：' + name, {
+                    btn: ['确定', '取消'],
+                    title: '新增物品'
+                }, function() {
+                    var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                    $.ajax({
+                        url: "/Admin/PostSendP",
+                        type: "POST",
+                        data: { item_id: item_id ,name:name},
+                        success: function(data) {
+                            if (data.code === 200) {
+                                layer.msg(data.msg, { icon: 1 });
+                                location.reload();
+                            } else {
+                                layer.msg(data.msg, { icon: 2 });
+                            }
+                            layer.close(load_show); // 关闭加载提示消息
+                        },
+                        error: function(xhr, status, error) {
+                            // 处理错误
+                            layer.close(load_show); // 在出现错误时关闭加载提示消息
+                        }
+                    });
+                }, function() {
+
+                });
+            }
+            return false
+        })
+
+        form.on('submit(PostSendItem)', function (data) {
+            var email = $("#email").val();
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+
+            $.ajax({
+                url: "/Admin/PostSendItem",
+                type: "POST",
+                data: { email: email },
+                success: function(data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, { icon: 1 });
+                        location.reload();
+                    } else {
+                        layer.msg(data.msg, { icon: 2 });
+                    }
+                    layer.close(load_show); // 关闭加载提示消息
+                },
+                error: function(xhr, status, error) {
+                    // 处理错误
+                    layer.close(load_show); // 在出现错误时关闭加载提示消息
+                }
+            });
+            return false
+        })
+
+        form.on('submit(UpAll)', function () {
+            var type = $(":radio[name='type']:checked").val();
+            var num = $("#num").val();
+            layer.confirm('全体发送需要一点时间，如果用户多的话需要的时间更久一点！', {
+                btn: ['确定', '取消'],
+                title: '全服充值'
+            }, function() {
+                var load_show = layer.msg('正在处理中，请稍后...', { icon: 16, shade: 0.1, time: 0 });
+
+                // 发送POST请求
+                $.ajax({
+                    url: "/Admin/UpAll",
+                    type: "POST",
+                    data: { type: type, num: num },
+                    success: function(data) {
+                        if (data.code === 200) {
+                            layer.msg(data.msg, { icon: 1 }, function() {
+                                location.reload(); // 刷新页面
+                            });
+                        } else {
+                            layer.msg(data.msg, { icon: 2 });
+                        }
+                        layer.close(load_show); // 关闭加载提示消息
+                    },
+                    error: function(xhr, status, error) {
+                        // 处理错误
+                        layer.close(load_show); // 在出现错误时关闭加载提示消息
+                    }
+                });
+            }, function() {
+
+            });
+
+            return false;
+        });
+
+
+        form.on('submit(PostSendItemAll)', function () {
+            var email = $("#email").val();
+            var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+            layer.confirm('全体发送需要一点时间，如果用户多的话需要的时间更久一点！', {
+                btn: ['确定', '取消'],
+                title: '全体发送'
+            }, function() {
+                $.ajax({
+                    url: "/Admin/PostSendItemAll",
+                    type: "POST",
+                    data: { email: email },
+                    success: function(data) {
+                        if (data.code === 200) {
+                            layer.msg(data.msg, { icon: 1 });
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg, { icon: 2 });
+                        }
+                        layer.close(load_show); // 关闭加载提示消息
+                    },
+                    error: function(xhr, status, error) {
+                        // 处理错误
+                        layer.close(load_show); // 在出现错误时关闭加载提示消息
+                    }
+                });
+            }, function() {
+
+            });
+            return false
+        })
+
+    });
+
+
+    function delSendP(entity, id) {
+        layui.use('jquery', function () {
+            $ = layui.jquery;
+            layer.confirm('确认从列表删除吗？', {
+                icon: 3,
+                title: '删除'
+            }, function () {
+                var load_show = layer.msg('正在处理中，请稍后...', {icon: 16, shade: 0.1, time: 0});
+                $.ajax({
+                    url: "/Admin/delSendP",
+                    type: "POST",
+                    data: { id: id},
+                    success: function(data) {
+                        if (data.code === 200) {
+                            layer.msg(data.msg, { icon: 1 });
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg, { icon: 2 });
+                        }
+                        layer.close(load_show); // 关闭加载提示消息
+                    },
+                    error: function(xhr, status, error) {
+                        // 处理错误
+                        layer.close(load_show); // 在出现错误时关闭加载提示消息
+                    }
+                });
+            }, function() {
+
+            });
+        });
+    }
+</script>

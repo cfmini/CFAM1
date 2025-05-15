@@ -1,0 +1,36 @@
+<div class="layui-fluid" style="padding-bottom: 75px;">
+    <div class="layui-card">
+        <div class="layui-card-header">操作记录</div>
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table class="layui-hide" id="CfControlsLog_Table" lay-filter="CfControlsLog_Table"></table>
+        </div>
+    </div>
+</div>
+<!-- js部分 -->
+<script>
+    var table
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            util = layui.util;
+        form.render(null, 'front-formlist');
+        table = layui.table
+        table.render({
+            elem: '#CfControlsLog_Table',
+            url: '/Admin/AjaxControlsLog',
+            toolbar: '#toolbarDemo',
+            cols: [[
+                {field: 'create_time', title: '操作时间', align: 'center'},
+                {field: 'type', title: '操作类型', align: 'center'},
+                {field: 'username', title: '账号', align: 'center'},
+                {field: 'ip', title: 'ip', align: 'center'},
+                {field: 'desc', title: '操作日记', align: 'center'},
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+    });
+</script>
